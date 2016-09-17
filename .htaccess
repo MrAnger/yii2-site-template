@@ -1,0 +1,10 @@
+RewriteEngine On
+
+# End the processing, if a rewrite already occurred
+RewriteRule ^(frontend|cp)/web/ - [L]
+
+# Handle the case of backend, skip ([S=1]) the following rule, if current matched
+RewriteRule ^cp(/(.*))?$ backend/web/$2 [S=1]
+
+# handle the case of frontend
+RewriteRule .* frontend/web/$0
