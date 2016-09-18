@@ -16,6 +16,13 @@ abstract class Rbac {
 
 	const ADMIN_ACCESS = 'adminAccess';
 
+	public static $roleMap = [
+		[
+			'role'        => self::ROLE_MASTER,
+			'permissions' => [self::ADMIN_ACCESS],
+		],
+	];
+
 	/**
 	 * @return array
 	 */

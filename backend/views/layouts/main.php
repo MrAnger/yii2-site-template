@@ -6,30 +6,34 @@
  */
 
 use backend\assets\BackendAsset;
+use backend\assets\ThemeAsset;
+use backend\assets\BowerAsset;
 use yii\helpers\Html;
 
+BowerAsset::register($this);
+ThemeAsset::register($this);
 BackendAsset::register($this);
 ?>
-<?php $this->beginPage() ?>
-<!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>">
-<head>
-	<meta charset="<?= Yii::$app->charset ?>">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<?= Html::csrfMetaTags() ?>
-	<title><?= Html::encode($this->title) ?></title>
-	<?php $this->head() ?>
-</head>
-<body>
-<?php $this->beginBody() ?>
+<?php $this->beginContent('@app/views/layouts/plain.php') ?>
+<header>
+	<?= $this->render('_header') ?>
+</header>
 
-<div class="wrap">
-	<div class="container">
-		<?= $content ?>
+<section>
+	<div class="mainwrapper">
+		<div class="leftpanel">
+			<?= $this->render('_left-panel') ?>
+		</div>
+
+		<div class="mainpanel">
+			<div class="pageheader">
+				<?= $this->render('_page-header') ?>
+			</div>
+			<div class="contentpanel site-body">
+				<?= \common\widgets\Alert::widget() ?>
+				<?= $content ?>
+			</div>
+		</div>
 	</div>
-</div>
-
-<?php $this->endBody() ?>
-</body>
-</html>
-<?php $this->endPage() ?>
+</section>
+<?php $this->endContent() ?>

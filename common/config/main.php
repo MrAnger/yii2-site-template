@@ -12,7 +12,7 @@ return [
 	'vendorPath'     => dirname(dirname(__DIR__)) . '/vendor',
 	'modules'        => [
 		// read doc in https://github.com/dektrium/yii2-user/blob/master/docs/README.md
-		'user' => [
+		'user'    => [
 			'class'                    => 'dektrium\user\Module',
 			'enableGeneratingPassword' => false,
 			'enableConfirmation'       => true,
@@ -22,6 +22,12 @@ return [
 				'User'    => 'common\models\User',
 				'Profile' => 'common\models\Profile',
 			],
+		],
+		// read doc in https://github.com/himiklab/yii2-sitemap-module/blob/master/README.md
+		'sitemap' => [
+			'class'       => 'himiklab\sitemap\Sitemap',
+			'enableGzip'  => true,
+			'cacheExpire' => 1,
 		],
 	],
 	'bootstrap'      => [

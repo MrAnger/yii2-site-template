@@ -41,7 +41,7 @@ class User extends \dektrium\user\models\User {
 
 	public function attributeLabels() {
 		return array_merge(parent::attributeLabels(), [
-			'roles' => Yii::t('app', 'Roles'),
+			'roles' => Yii::t('app.roles', 'Roles'),
 		]);
 	}
 

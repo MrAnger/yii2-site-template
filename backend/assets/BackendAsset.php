@@ -8,9 +8,10 @@ class BackendAsset extends AssetBundle {
 	public $basePath = '@webroot';
 	public $baseUrl = '@web';
 	public $css = [
-		'css/site.css',
+		'static/css/site.css',
 	];
 	public $js = [
+		'static/js/main.js',
 	];
 	public $depends = [
 		'yii\web\YiiAsset',

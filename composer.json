@@ -18,7 +18,12 @@
         "yiisoft/yii2": ">=2.0.6",
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
-        "dektrium/yii2-user": "0.9.8"
+        "dektrium/yii2-user": "0.9.9",
+        "ckeditor/ckeditor": "dev-full/stable",
+        "mranger/yii2-ckeditor": "*",
+        "himiklab/yii2-sitemap-module" : "*",
+        "kartik-v/yii2-widgets": "*",
+        "bower-asset/growl": "^1.3"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

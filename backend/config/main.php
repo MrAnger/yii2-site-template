@@ -15,7 +15,19 @@ return [
 		'log',
 		'backend\components\StartUp',
 	],
-	'modules'             => [],
+	'modules'             => [
+		'user' => [
+			'enableFlashMessages' => true,
+			'controllerMap'       => [
+				'security'     => 'backend\controllers\SecurityController',
+				'recovery'     => 'backend\controllers\RecoveryController',
+				'registration' => 'backend\controllers\RegistrationController',
+			],
+			'modelMap'            => [
+				'LoginForm' => 'backend\models\LoginForm',
+			],
+		],
+	],
 	'components'          => [
 		'request'      => [
 			'baseUrl' => '/cp',
@@ -31,6 +43,13 @@ return [
 		],
 		'errorHandler' => [
 			'errorAction' => 'site/error',
+		],
+		'view'         => [
+			'theme' => [
+				'pathMap' => [
+					'@dektrium/user/views' => '@app/views/user',
+				],
+			],
 		],
 	],
 	'params'              => $params,

@@ -27,8 +27,11 @@ class SiteController extends BaseController {
 	 */
 	public function actions() {
 		return [
-			'error' => [
+			'error'                => [
 				'class' => 'yii\web\ErrorAction',
+			],
+			'ckeditor-file-upload' => [
+				'class' => 'mranger\ckeditor\actions\FileUploadAction',
 			],
 		];
 	}

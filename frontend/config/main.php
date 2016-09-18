@@ -11,7 +11,20 @@ $config = [
 	'id'                  => 'app-frontend',
 	'basePath'            => dirname(__DIR__),
 	'controllerNamespace' => 'frontend\controllers',
-	'modules'             => [],
+	'modules'             => [
+		'user'    => [
+			'enableFlashMessages' => true,
+			'controllerMap'       => [
+				'security'     => 'frontend\controllers\SecurityController',
+				'recovery'     => 'frontend\controllers\RecoveryController',
+				'registration' => 'frontend\controllers\RegistrationController',
+			],
+		],
+		'sitemap' => [
+			'models' => [],
+			'urls'   => require(__DIR__ . '/sitemap-urls.php'),
+		],
+	],
 	'bootstrap'           => [
 		'log',
 		'frontend\components\StartUp',

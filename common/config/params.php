@@ -1,3 +1,6 @@
 <?php
 
-return [];
+return [
+	'CKEditorFileUploadPath'  => '@frontend/web/upload',
+	'CKEditorFileUploadedUrl' => '/upload',
+];
