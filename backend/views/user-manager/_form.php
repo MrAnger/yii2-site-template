@@ -1,6 +1,7 @@
 <?php
 
 use common\models\User;
+use common\Rbac;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
@@ -24,7 +25,22 @@ $roleList = $userBuddy->getRoleDropdownList();
 	<div class="row">
 		<div class="col-md-6">
 			<?= $form->field($model, 'roles')
-				->checkboxList($roleList) ?>
+				->checkboxList($roleList, [
+					'item' => function ($index, $label, $name, $checked, $value) {
+						$options = [
+							'value' => $value,
+							'label' => $label,
+						];
+
+						if ($value == Rbac::ROLE_MASTER) {
+							$options['disabled'] = ' disabled';
+						}
+
+						$html = Html::checkbox($name, $checked, $options);
+
+						return "<div class='checkbox'>$html</div>";
+					},
+				]) ?>
 		</div>
 	</div>
 

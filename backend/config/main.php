@@ -17,7 +17,7 @@ return [
 	],
 	'modules'             => [
 		'user' => [
-			'enableFlashMessages' => true,
+			'enableFlashMessages' => false,
 			'controllerMap'       => [
 				'security'     => 'backend\controllers\SecurityController',
 				'recovery'     => 'backend\controllers\RecoveryController',

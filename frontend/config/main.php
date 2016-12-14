@@ -46,6 +46,13 @@ $config = [
 		'errorHandler' => [
 			'errorAction' => 'site/error',
 		],
+		'view'         => [
+			'theme' => [
+				'pathMap' => [
+					'@dektrium/user/views' => '@app/views/user',
+				],
+			],
+		],
 	],
 	'params'              => $params,
 ];

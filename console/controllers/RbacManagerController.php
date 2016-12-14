@@ -10,6 +10,7 @@ use yii\console\Controller;
 use yii\helpers\ArrayHelper;
 use yii\rbac\Permission;
 use yii\rbac\Role;
+use yii\rbac\Rule;
 
 /**
  * @author MrAnger
@@ -18,29 +19,32 @@ class RbacManagerController extends Controller {
 	public function actionInitRoles() {
 		$authManager = Yii::$app->authManager;
 
-		$authManager->removeAllPermissions();
-		$authManager->removeAllRoles();
+		$authManager->removeAll();
+
+		foreach (Rbac::getPermissionList() as $permissionId) {
+			$permission = $authManager->createPermission($permissionId);
+
+			$ruleClass = ArrayHelper::getValue(Rbac::getRuleList(), $permissionId, false);
+			if ($ruleClass !== false) {
+				/** @var Rule $rule */
+				$rule = Yii::createObject(['class' => $ruleClass]);
+				$authManager->add($rule);
+
+				$permission->ruleName = $rule->name;
+			}
+
+			$authManager->add($permission);
+		}
 
 		foreach (Rbac::$roleMap as $item) {
 			$roleId = ArrayHelper::getValue($item, 'role');
 			$permissions = ArrayHelper::getValue($item, 'permissions', []);
 
-			/** @var Role $role */
-			$role = $authManager->getRole($roleId);
-
-			if ($role === null) {
-				$role = $authManager->createRole($roleId);
-				$authManager->add($role);
-			}
+			$role = $authManager->createRole($roleId);
+			$authManager->add($role);
 
 			foreach ($permissions as $permissionId) {
-				/** @var Permission $permission */
 				$permission = $authManager->getPermission($permissionId);
-
-				if ($permission === null) {
-					$permission = $authManager->createPermission($permissionId);
-					$authManager->add($permission);
-				}
 
 				$authManager->addChild($role, $permission);
 			}

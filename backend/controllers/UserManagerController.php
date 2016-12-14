@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\UserSearch;
+use common\Rbac;
 use Yii;
 use common\models\User;
 use yii\data\ActiveDataProvider;
@@ -12,6 +13,15 @@ use yii\web\NotFoundHttpException;
  * @author MrAnger
  */
 class UserManagerController extends BaseController {
+	public function getAccessRules() {
+		return [
+			[
+				'allow' => true,
+				'roles' => [Rbac::ROLE_MASTER],
+			],
+		];
+	}
+
 	/**
 	 * @return mixed
 	 */
@@ -37,7 +47,15 @@ class UserManagerController extends BaseController {
 
 		$model->loadRoles();
 
+		$isExistRoleMaster = false;
+		if (isset($model->roles[Rbac::ROLE_MASTER]))
+			$isExistRoleMaster = true;
+
 		if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+			if (array_search(Rbac::ROLE_MASTER, $model->roles) === false && $isExistRoleMaster) {
+				$model->roles[] = Rbac::ROLE_MASTER;
+			}
+
 			$transaction = Yii::$app->db->beginTransaction();
 
 			try {
@@ -46,6 +64,8 @@ class UserManagerController extends BaseController {
 				$model->save(false);
 
 				$transaction->commit();
+
+				Yii::$app->session->addFlash('success', 'Роли пользователя обновлены.');
 
 				return $this->redirect(['update', 'id' => $model->id]);
 			} catch (\Exception $e) {

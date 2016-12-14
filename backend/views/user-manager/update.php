@@ -12,7 +12,7 @@ use yii\helpers\Url;
 $this->title = Yii::t('app.actions', 'Editing');
 
 $this->params['breadcrumbs'] = [
-	['label' => Yii::t('app', 'User Roles'), 'url' => ['index']],
+	['label' => Yii::t('app', 'Users Roles'), 'url' => ['index']],
 	['label' => $model->displayName],
 	Yii::t('app.actions', 'Edit'),
 ];

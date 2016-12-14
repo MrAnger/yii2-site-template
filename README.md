@@ -8,6 +8,11 @@
 composer update
 ```
 
+Инициализируем конфиги, первоначально задав необходимые параметры в environments
+```
+php init
+```
+
 Создаем необходимые таблицы для модуля пользователей
 ```
 php yii migrate/up --migrationPath=@vendor/dektrium/yii2-user/migrations
