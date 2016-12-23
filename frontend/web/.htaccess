@@ -1,3 +1,4 @@
+Options All -Indexes
 Options +FollowSymLinks
 IndexIgnore */*
 
