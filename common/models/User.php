@@ -8,28 +8,9 @@ use yii\helpers\ArrayHelper;
 
 /**
  * @property string $displayName
+ * @property Author $author
  */
-class User extends \dektrium\user\models\User {
-	/**
-	 * @const
-	 */
-	const EVENT_BEFORE_REGISTER = parent::BEFORE_REGISTER;
-
-	/**
-	 * @const
-	 */
-	const EVENT_AFTER_REGISTER = parent::AFTER_REGISTER;
-
-	/**
-	 * @event
-	 */
-	const EVENT_BEFORE_CONFIRM = parent::BEFORE_CONFIRM;
-
-	/**
-	 * @event
-	 */
-	const EVENT_AFTER_CONFIRM = parent::AFTER_CONFIRM;
-
+class User extends \Da\User\Model\User {
 	/** @var array */
 	public $roles = [];
 
@@ -101,5 +82,12 @@ class User extends \dektrium\user\models\User {
 		}
 
 		return $this->username;
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getAuthor() {
+		return $this->hasOne(Author::class, ['user_id' => 'id']);
 	}
 }

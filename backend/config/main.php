@@ -19,11 +19,16 @@ return [
 		'user' => [
 			'enableFlashMessages' => false,
 			'controllerMap'       => [
-				'security'     => 'backend\controllers\SecurityController',
-				'recovery'     => 'backend\controllers\RecoveryController',
-				'registration' => 'backend\controllers\RegistrationController',
+				'security'     => 'backend\controllers\usuario\SecurityController',
+				'recovery'     => 'backend\controllers\usuario\RecoveryController',
+				'registration' => 'backend\controllers\usuario\RegistrationController',
+
+				'admin'      => 'backend\controllers\usuario\AdminController',
+				'role'       => 'backend\controllers\usuario\RoleController',
+				'permission' => 'backend\controllers\usuario\PermissionController',
+				'rule'       => 'backend\controllers\usuario\RuleController',
 			],
-			'modelMap'            => [
+			'classMap'            => [
 				'LoginForm' => 'backend\models\LoginForm',
 			],
 		],
@@ -32,24 +37,11 @@ return [
 		'request'      => [
 			'baseUrl' => '/cp',
 		],
-		'urlManager'   => [
-			'scriptUrl' => '/cp/index.php',
-		],
-		'cache'        => [
-			'class' => 'yii\caching\FileCache',
-		],
-		'assetManager' => [
-			'appendTimestamp' => true,
-		],
+		'urlManager'   => function () {
+			return Yii::$app->backendUrlManager;
+		},
 		'errorHandler' => [
 			'errorAction' => 'site/error',
-		],
-		'view'         => [
-			'theme' => [
-				'pathMap' => [
-					'@dektrium/user/views' => '@app/views/user',
-				],
-			],
 		],
 	],
 	'params'              => $params,

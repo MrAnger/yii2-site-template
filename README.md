@@ -1,7 +1,5 @@
-# yii2-site-template
-Базовый шаблон сайта на Yii 2.* версии с раздельным frontend и backend на одном домене
-
-Что бы развернуть базовый шаблон, необходимо выполнить следующие команды:
+# Yii2-site-template
+Что бы развернуть сайт, необходимо выполнить следующие команды:
 
 Получаем библиотеки необходимых версий
 ```
@@ -13,14 +11,9 @@ composer update
 php init
 ```
 
-Создаем необходимые таблицы для модуля пользователей
+Выполняем миграции
 ```
-php yii migrate/up --migrationPath=@vendor/dektrium/yii2-user/migrations
-```
-
-Создаем необходимые таблицы для Rbac модуля
-```
-php yii migrate --migrationPath=@yii/rbac/migrations/
+php yii migrate
 ```
 
 Создаем необходимую структуру ролей Rbac
@@ -30,10 +23,26 @@ php yii rbac-manager/init-roles
 
 После необходимо добавить пользователя (админа) для авторизации в панели управления:
 ```
-php yii user/create admin@yoursite.ru admin_login admin_password
+php yii user/create <email> <username> [password] MASTER
 ```
 
-После создания пользователя, необходимо выдать ему права главного администратора:
+Так как данные авторизации для админки и публичной части одинаковы, необходимо сделать идентичными cookieValidationKey.
+Т.е. необходимо скопировать данное значение из backend/config/main-local.php в frontend/config/main-local.php
 ```
-php yii rbac-manager/set-user-as-master admin_email
+frontend.components.request.cookieValidationKey = backend.components.request.cookieValidationKey
+```
+
+Основные параметры:
+```
+common/config/params-local.php
+------------------------
+contactEmailSource - Email адрес, который будет написан в отправителе письма
+```
+
+```
+common/config/main-local.php
+------------------------
+backendUrlManager.baseUrl - Ссылка до панели управления сайтом
+frontendUrlManager.baseUrl - Ссылка до публичной части сайта
+modules.user.fromEmail - Email адрес, который будет написан в отправителе письма
 ```

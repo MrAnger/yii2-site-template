@@ -2,54 +2,75 @@
 
 namespace backend\models;
 
-use dektrium\user\Finder;
-use dektrium\user\helpers\Password;
+use common\Rbac;
+use Da\User\Validator\TwoFactorCodeValidator;
 use Yii;
 use yii\base\Model;
-use dektrium\user\traits\ModuleTrait;
 
 /**
  * @author MrAnger
  */
-class LoginForm extends \dektrium\user\models\LoginForm {
+class LoginForm extends \Da\User\Form\LoginForm {
 	/** @inheritdoc */
 	public function rules() {
 		return [
-			'requiredFields'       => [['login', 'password'], 'required'],
-			'loginTrim'            => ['login', 'trim'],
-			'passwordValidate'     => [
+			'requiredFields'                      => [['login', 'password'], 'required'],
+			'requiredFieldsTwoFactor'             => [
+				['login', 'password', 'twoFactorAuthenticationCode'],
+				'required',
+				'on' => '2fa',
+			],
+			'loginTrim'                           => ['login', 'trim'],
+			'twoFactorAuthenticationCodeTrim'     => ['twoFactorAuthenticationCode', 'trim'],
+			'passwordValidate'                    => [
 				'password',
 				function ($attribute) {
-					if ($this->user === null || !Password::validate($this->password, $this->user->password_hash)) {
-						$this->addError($attribute, Yii::t('user', 'Invalid login or password'));
+					if ($this->user === null ||
+						!$this->securityHelper->validatePassword($this->password, $this->user->password_hash)
+					) {
+						$this->addError($attribute, Yii::t('usuario', 'Invalid login or password'));
+
+						return true;
 					}
 
 					if ($this->user !== null) {
 						$authManager = Yii::$app->authManager;
 
-						$roles = $authManager->getRolesByUser($this->user->id);
-
-						if (count($roles) == 0)
+						if (!$authManager->checkAccess($this->user->id, Rbac::PERMISSION_CONTROL_PANEL_ACCESS))
 							$this->addError('login', Yii::t('app.errors', 'You are not allowed to enter control panel.'));
 					}
 				},
 			],
-			'confirmationValidate' => [
+			'twoFactorAuthenticationCodeValidate' => [
+				'twoFactorAuthenticationCode',
+				function ($attribute) {
+					if ($this->user === null ||
+						!(new TwoFactorCodeValidator(
+							$this->user,
+							$this->twoFactorAuthenticationCode,
+							$this->module->twoFactorAuthenticationCycles
+						))
+							->validate()) {
+						$this->addError($attribute, Yii::t('usuario', 'Invalid two factor authentication code'));
+					}
+				},
+			],
+			'confirmationValidate'                => [
 				'login',
 				function ($attribute) {
 					if ($this->user !== null) {
-						$confirmationRequired = $this->module->enableConfirmation
-							&& !$this->module->enableUnconfirmedLogin;
+						$module = $this->getModule();
+						$confirmationRequired = $module->enableEmailConfirmation && !$module->allowUnconfirmedEmailLogin;
 						if ($confirmationRequired && !$this->user->getIsConfirmed()) {
-							$this->addError($attribute, Yii::t('user', 'You need to confirm your email address'));
+							$this->addError($attribute, Yii::t('usuario', 'You need to confirm your email address'));
 						}
 						if ($this->user->getIsBlocked()) {
-							$this->addError($attribute, Yii::t('user', 'Your account has been blocked'));
+							$this->addError($attribute, Yii::t('usuario', 'Your account has been blocked'));
 						}
 					}
 				},
 			],
-			'rememberMe'           => ['rememberMe', 'boolean'],
+			'rememberMe'                          => ['rememberMe', 'boolean'],
 		];
 	}
 }

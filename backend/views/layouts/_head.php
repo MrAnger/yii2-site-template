@@ -10,6 +10,6 @@ use yii\helpers\Url;
 ?>
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
-<script src="<?= Yii::$app->urlManager->baseUrl . "/theme/js/html5shiv.js" ?>"></script>
-<script src="<?= Yii::$app->urlManager->baseUrl . "/theme/js/respond.min.js" ?>"></script>
+<script src="<?= Yii::$app->urlManager->baseUrl ?>/theme/js/html5shiv.js"></script>
+<script src="<?= Yii::$app->urlManager->baseUrl ?>/theme/js/respond.min.js"></script>
 <![endif]-->

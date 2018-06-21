@@ -1,15 +1,22 @@
 <?php
 
 return [
+	'modules'    => [
+		'user' => [
+			'mailParams' => [
+				'fromEmail' => 'noreply@example.com',
+			],
+		],
+	],
 	'components' => [
-		'db'     => [
+		'db'                 => [
 			'class'    => 'yii\db\Connection',
 			'dsn'      => 'mysql:host=localhost;dbname=database_name',
 			'username' => 'root',
 			'password' => '',
 			'charset'  => 'utf8',
 		],
-		'mailer' => [
+		'mailer'             => [
 			'class'     => 'yii\swiftmailer\Mailer',
 			'viewPath'  => '@common/mail',
 			'transport' => [
@@ -21,6 +28,12 @@ return [
 				'port'       => '587',
 				'encryption' => 'tls',
 			],
+		],
+		'backendUrlManager'  => [
+			'baseUrl' => 'http://site.ru/cp',
+		],
+		'frontendUrlManager' => [
+			'baseUrl' => 'http://site.ru',
 		],
 	],
 ];

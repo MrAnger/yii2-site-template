@@ -13,11 +13,11 @@ $config = [
 	'controllerNamespace' => 'frontend\controllers',
 	'modules'             => [
 		'user'    => [
-			'enableFlashMessages' => true,
+			'enableFlashMessages' => false,
 			'controllerMap'       => [
-				'security'     => 'frontend\controllers\SecurityController',
-				'recovery'     => 'frontend\controllers\RecoveryController',
-				'registration' => 'frontend\controllers\RegistrationController',
+				'security'     => 'frontend\controllers\usuario\SecurityController',
+				'recovery'     => 'frontend\controllers\usuario\RecoveryController',
+				'registration' => 'frontend\controllers\usuario\RegistrationController',
 			],
 		],
 		'sitemap' => [
@@ -33,25 +33,11 @@ $config = [
 		'request'      => [
 			'baseUrl' => '',
 		],
-		'urlManager'   => [
-			'scriptUrl' => '/index.php',
-			'rules'     => require(__DIR__ . '/routes.php'),
-		],
-		'cache'        => [
-			'class' => 'yii\caching\FileCache',
-		],
-		'assetManager' => [
-			'appendTimestamp' => true,
-		],
+		'urlManager'   => function () {
+			return Yii::$app->frontendUrlManager;
+		},
 		'errorHandler' => [
 			'errorAction' => 'site/error',
-		],
-		'view'         => [
-			'theme' => [
-				'pathMap' => [
-					'@dektrium/user/views' => '@app/views/user',
-				],
-			],
 		],
 	],
 	'params'              => $params,

@@ -8,6 +8,7 @@ use Yii;
 use yii\base\ErrorException;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
+use yii\rbac\ManagerInterface;
 use yii\rbac\Permission;
 use yii\rbac\Role;
 use yii\rbac\Rule;
@@ -16,121 +17,188 @@ use yii\rbac\Rule;
  * @author MrAnger
  */
 class RbacManagerController extends Controller {
-	public function actionInitRoles() {
-		$authManager = Yii::$app->authManager;
+	/**
+	 * @var ManagerInterface
+	 */
+	private $authManager;
 
-		$authManager->removeAll();
+	public function init() {
+		parent::init();
+
+		$this->authManager = Yii::$app->authManager;
+	}
+
+	/**
+	 * Данный метод удаляет все данные Rbac и создает новую структуру ролей в соответствии с настройками в
+	 * common\Rbac::roleMap
+	 */
+	public function actionInitRoles() {
+		$this->authManager->removeAll();
 
 		foreach (Rbac::getPermissionList() as $permissionId) {
-			$permission = $authManager->createPermission($permissionId);
+			$permission = $this->authManager->createPermission($permissionId);
 
-			$ruleClass = ArrayHelper::getValue(Rbac::getRuleList(), $permissionId, false);
-			if ($ruleClass !== false) {
+			// Описание
+			$description = Yii::t('app.permissions', $permissionId);
+			if ($description != $permissionId) {
+				$permission->description = $description;
+			}
+
+			$ruleClass = ArrayHelper::getValue(Rbac::getRuleList(), $permissionId);
+			if ($ruleClass !== null) {
 				/** @var Rule $rule */
 				$rule = Yii::createObject(['class' => $ruleClass]);
-				$authManager->add($rule);
+				$this->authManager->add($rule);
 
 				$permission->ruleName = $rule->name;
 			}
 
-			$authManager->add($permission);
+			$this->authManager->add($permission);
 		}
 
-		foreach (Rbac::$roleMap as $item) {
+		foreach (Rbac::getRoleMap() as $item) {
 			$roleId = ArrayHelper::getValue($item, 'role');
 			$permissions = ArrayHelper::getValue($item, 'permissions', []);
 
-			$role = $authManager->createRole($roleId);
-			$authManager->add($role);
+			$role = $this->authManager->createRole($roleId);
+
+			// Описание
+			$description = Yii::t('app.roles', $roleId);
+			if ($description != $roleId) {
+				$role->description = $description;
+			}
+
+			$this->authManager->add($role);
 
 			foreach ($permissions as $permissionId) {
-				$permission = $authManager->getPermission($permissionId);
+				$permission = $this->authManager->getPermission($permissionId);
 
-				$authManager->addChild($role, $permission);
+				$this->authManager->addChild($role, $permission);
 			}
 		}
 	}
 
 	/**
-	 * @param string $email
+	 * Данный метод ничего не удаляет, а лишь создает недостоющие элементы в соответствии с настройками в
+	 * common\Rbac::roleMap
 	 */
-	public function actionSetUserAsMaster($email) {
-		$roleId = Rbac::ROLE_MASTER;
+	public function actionUpdateRoles() {
+		foreach (Rbac::getPermissionList() as $permissionId) {
+			$permission = $this->authManager->getPermission($permissionId);
 
-		try {
-			if ($this->setRoleUser($email, $roleId))
-				$this->log("Set user($email) as '$roleId' successfully.");
-			else
-				$this->log("Set user($email) as '$roleId' failed.");
-		} catch (\Exception $e) {
-			$this->log("ERROR: " . $e->getMessage());
+			if ($permission === null) {
+				$permission = $this->authManager->createPermission($permissionId);
+			}
+
+			// Описание
+			$description = Yii::t('app.permissions', $permissionId);
+			if ($description != $permissionId && $permission->description === null) {
+				$permission->description = $description;
+			}
+
+			$ruleClass = ArrayHelper::getValue(Rbac::getRuleList(), $permissionId);
+			if ($ruleClass !== null) {
+				/** @var Rule $rule */
+				$rule = Yii::createObject(['class' => $ruleClass]);
+
+				$oldRule = $this->authManager->getRule($rule->name);
+				if ($oldRule === null) {
+					$this->authManager->add($rule);
+				} else {
+					$this->authManager->update($rule->name, $rule);
+				}
+
+				$permission->ruleName = $rule->name;
+			}
+
+			if ($permission->createdAt === null) {
+				$this->authManager->add($permission);
+			} else {
+				$this->authManager->update($permission->name, $permission);
+			}
+		}
+
+		foreach (Rbac::getRoleMap() as $item) {
+			$roleId = ArrayHelper::getValue($item, 'role');
+			$permissions = ArrayHelper::getValue($item, 'permissions', []);
+
+			$role = $this->authManager->getRole($roleId);
+			if ($role === null) {
+				$role = $this->authManager->createRole($roleId);
+			}
+
+			// Описание
+			$description = Yii::t('app.roles', $roleId);
+			if ($description != $roleId && $role->description === null) {
+				$role->description = $description;
+			}
+
+			if ($role->createdAt === null) {
+				$this->authManager->add($role);
+			} else {
+				$this->authManager->update($role->name, $role);
+			}
+
+			foreach ($permissions as $permissionId) {
+				$permission = $this->authManager->getPermission($permissionId);
+
+				if (!$this->authManager->hasChild($role, $permission)) {
+					$this->authManager->addChild($role, $permission);
+				}
+			}
 		}
 	}
 
-	/**
-	 * @param string $email
-	 */
-	public function actionUnsetUserAsMaster($email) {
-		$roleId = Rbac::ROLE_MASTER;
-
-		try {
-			if ($this->removeRoleUser($email, $roleId))
-				$this->log("Remove user($email) role '$roleId' successfully.");
-			else
-				$this->log("Remove user($email) role '$roleId' failed.");
-		} catch (\Exception $e) {
-			$this->log("ERROR: " . $e->getMessage());
-		}
-	}
-
-	/**
-	 * @param string $email
-	 * @param string $roleId
-	 *
-	 * @return bool
-	 *
-	 * @throws \Exception
-	 */
-	private function setRoleUser($email, $roleId) {
+	public function actionUserAssignRole($email, $roleId) {
 		$user = $this->findUserByEmail($email);
 
-		$authManager = Yii::$app->authManager;
+		if ($this->authManager->checkAccess($user->id, $roleId)) {
+			$this->stderr("User with email $email already assigned role $roleId.");
 
-		if ($authManager->checkAccess($user->id, $roleId))
-			throw new \Exception("User with email '$email' already setted role '$roleId'.");
-
-		$role = $authManager->getRole($roleId);
-
-		if ($role !== null) {
-			return $authManager->assign($role, $user->id);
+			return true;
 		}
 
-		return false;
+		$role = $this->authManager->getRole($roleId);
+
+		if ($role === null) {
+			$this->stderr("Role $roleId not found.");
+
+			return true;
+		}
+
+		$result = $this->authManager->assign($role, $user->id);
+
+		if ($result) {
+			$this->stdout("User with email $email assigned to $roleId successfully.");
+		} else {
+			$this->stdout("User with email $email assigned to $roleId failed.");
+		}
 	}
 
-	/**
-	 * @param string $email
-	 * @param string $roleId
-	 *
-	 * @return bool
-	 *
-	 * @throws \Exception
-	 */
-	private function removeRoleUser($email, $roleId) {
+	public function actionUserRevokeRole($email, $roleId) {
 		$user = $this->findUserByEmail($email);
 
-		$authManager = Yii::$app->authManager;
+		if (!$this->authManager->checkAccess($user->id, $roleId)) {
+			$this->stderr("User with email $email not assigned role $roleId.");
 
-		if (!$authManager->checkAccess($user->id, $roleId))
-			throw new \Exception("User with email '$email' not setted role '$roleId'.");
-
-		$role = $authManager->getRole($roleId);
-
-		if ($role !== null) {
-			return $authManager->revoke($role, $user->id);
+			return true;
 		}
 
-		return false;
+		$role = $this->authManager->getRole($roleId);
+
+		if ($role === null) {
+			$this->stderr("Role $roleId not found.");
+
+			return true;
+		}
+
+		$result = $this->authManager->revoke($role, $user->id);
+
+		if ($result) {
+			$this->stdout("User with email $email revoke $roleId successfully.");
+		} else {
+			$this->stdout("User with email $email revoke $roleId failed.");
+		}
 	}
 
 	/**
@@ -147,12 +215,5 @@ class RbacManagerController extends Controller {
 			throw new \Exception("User with email '$email' not found.");
 
 		return $user;
-	}
-
-	/**
-	 * @param string $string
-	 */
-	private function log($string) {
-		echo $string . PHP_EOL;
 	}
 }

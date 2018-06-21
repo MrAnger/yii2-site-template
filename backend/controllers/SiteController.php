@@ -1,4 +1,5 @@
 <?php
+
 namespace backend\controllers;
 
 use common\Rbac;
@@ -17,7 +18,7 @@ class SiteController extends BaseController {
 			],
 			[
 				'allow' => true,
-				'roles' => Rbac::getRoleList(),
+				'roles' => [Rbac::PERMISSION_CONTROL_PANEL_ACCESS],
 			],
 		];
 	}
@@ -27,11 +28,8 @@ class SiteController extends BaseController {
 	 */
 	public function actions() {
 		return [
-			'error'                => [
+			'error' => [
 				'class' => 'yii\web\ErrorAction',
-			],
-			'ckeditor-file-upload' => [
-				'class' => 'mranger\ckeditor\actions\FileUploadAction',
 			],
 		];
 	}

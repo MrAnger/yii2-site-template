@@ -18,9 +18,9 @@ class ThemeAsset extends AssetBundle {
 
 	public $js = [
 		'js/jquery.cookies.js',
-		'js/modernizr.min.js',
-		'js/pace.min.js',
-		'js/retina.min.js',
+		//'js/modernizr.min.js',
+		//'js/pace.min.js',
+		//'js/retina.min.js',
 		'js/custom.js',
 	];
 

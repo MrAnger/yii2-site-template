@@ -36,8 +36,8 @@ abstract class BaseController extends Controller {
 	public function getAccessRules() {
 		return [
 			[
-				'allow' => true,
-				'roles' => [Rbac::ROLE_MASTER],
+				'allow'       => true,
+				'permissions' => [Rbac::PERMISSION_CONTROL_PANEL_ACCESS],
 			],
 		];
 	}

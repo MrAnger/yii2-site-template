@@ -14,4 +14,16 @@ return [
 	'bootstrap'           => ['log'],
 	'params'              => $params,
 	'components'          => [],
+	'controllerMap'       => [
+		'migrate' => [
+			'class'               => \yii\console\controllers\MigrateController::class,
+			'migrationPath'       => [
+				'@app/migrations',
+				'@yii/rbac/migrations',
+			],
+			'migrationNamespaces' => [
+				'Da\User\Migration',
+			],
+		],
+	],
 ];

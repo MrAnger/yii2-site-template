@@ -21,24 +21,20 @@ class UserEditRule extends Rule {
 	public function execute($currentUserId, $item, $params) {
 		$authManager = Yii::$app->authManager;
 
-		$editableUserId = ArrayHelper::getValue($params, 'userId', false);
-		if (!$editableUserId)
+		// Если ID пользователя, которого хотят изменить не передали, то запрещаем
+		$targetUserId = ArrayHelper::getValue($params, 'userId');
+		if ($targetUserId === null) {
 			return false;
+		}
 
 		$currentUserIsMaster = $authManager->checkAccess($currentUserId, Rbac::ROLE_MASTER);
-		$editableUserIsMaster = $authManager->checkAccess($editableUserId, Rbac::ROLE_MASTER);
-		$editableUserIsAdmin = $authManager->checkAccess($editableUserId, Rbac::ROLE_ADMIN);
+		$targetUserIsMaster = $authManager->checkAccess($targetUserId, Rbac::ROLE_MASTER);
 
-		if ($currentUserIsMaster) {
-			return true;
-		} else {
-			if ($editableUserIsMaster) {
-				return false;
-			} elseif ($editableUserIsAdmin) {
-				return ($currentUserId == $editableUserId);
-			} else {
-				return true;
-			}
+		// Если хотят изменить мастера, и текущий пользователь сам не мастер, то запрещаем
+		if ($targetUserIsMaster && !$currentUserIsMaster) {
+			return false;
 		}
+
+		return true;
 	}
 }

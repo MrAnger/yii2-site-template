@@ -22,6 +22,6 @@ return array_merge(
 			['name' => 'clipboard', 'groups' => ['clipboard', 'undo']],
 			['name' => 'editing', 'groups' => ['find', 'selection', 'spellchecker']],
 		],
-		'filebrowserUploadUrl' => Url::to(['/site/ckeditor-file-upload'], true),
+		'filebrowserUploadUrl' => Url::to(['/wysiwyg/ckeditor-file-upload'], true),
 	]
 );
