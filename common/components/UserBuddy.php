@@ -9,30 +9,26 @@ use yii\db\ActiveQuery;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\rbac\DbManager;
+use yii\rbac\Role;
 
 /**
- * @author Cyrill Tekord
+ * @author MrAnger
  */
 class UserBuddy extends Component {
 	/**
-	 * @var string
+	 * @var array
 	 */
-	public $workingModule = 'user';
+	protected $roleList;
 
 	/**
 	 * @var array
 	 */
-	protected $_roleList;
-
-	/**
-	 * @var array
-	 */
-	protected $_roleDropdownList;
+	protected $roleDropdownList;
 
 	/**
 	 * @var DbManager
 	 */
-	protected $_authManager;
+	protected $authManager;
 
 	/**
 	 * @inheritdoc
@@ -40,10 +36,7 @@ class UserBuddy extends Component {
 	public function init() {
 		parent::init();
 
-		$this->_authManager = Yii::$app->getAuthManager();
-
-		if (is_string($this->workingModule))
-			$this->workingModule = Yii::$app->getModule($this->workingModule);
+		$this->authManager = Yii::$app->authManager;
 	}
 
 	/**
@@ -52,11 +45,17 @@ class UserBuddy extends Component {
 	 * @return array
 	 */
 	public function getRoleList($useCache = true) {
-		if (!$useCache || $this->_roleList === null) {
-			$this->_roleList = ArrayHelper::getColumn($this->_authManager->getRoles(), 'name');
+		if (!$useCache || $this->roleList === null) {
+			$this->roleList = ArrayHelper::map($this->authManager->getRoles(), 'name', function (Role $item) {
+				if (empty($item->description)) {
+					return $item->name;
+				}
+
+				return $item->description;
+			});
 		}
 
-		return $this->_roleList;
+		return $this->roleList;
 	}
 
 	/**
@@ -65,19 +64,13 @@ class UserBuddy extends Component {
 	 * @return array
 	 */
 	public function getRoleDropdownList($useCache = true) {
-		if (!$useCache || $this->_roleDropdownList === null) {
-			$roleList = $this->getRoleList($useCache);
+		if (!$useCache || $this->roleDropdownList === null) {
+			$roles = $this->getRoleList($useCache);
 
-			$roles = ArrayHelper::getColumn($this->_authManager->getRoles(), 'name');
-
-			$this->_roleDropdownList = [];
-
-			foreach ($roles as $roleId) {
-				$this->_roleDropdownList[$roleId] = Yii::t('app.roles', $roleId);
-			}
+			$this->roleDropdownList = $this->getRoleList($useCache);
 		}
 
-		return $this->_roleDropdownList;
+		return $this->roleDropdownList;
 	}
 
 	/**
@@ -85,22 +78,25 @@ class UserBuddy extends Component {
 	 *
 	 * @return ActiveQuery
 	 */
-	public function findByRole($roleId) {
-		$query = new Query();
-		$query->from($this->_authManager->assignmentTable)
-			->select('user_id')
-			->where(['item_name' => $roleId]);
+	public function queryFindByRole($roleId) {
+		$userIds = $this->authManager->getUserIdsByRole($roleId);
 
+		if (!empty($userIds)) {
+			return User::find()
+				->where(['in', 'id', $userIds]);
+		}
+
+		// Если пользователей с такой ролью нет, надо всё равно вернуть ActiveQuery, но с заведомо пустым результатом
 		return User::find()
-			->where(['in', 'id', $query]);
+			->where(['id' => -1]);
 	}
 
 	/**
 	 * @return ActiveQuery
 	 */
-	public function getQueryUsersHasRoles() {
+	public function queryUsersHasRoles() {
 		$query = new Query();
-		$query->from($this->_authManager->assignmentTable)
+		$query->from($this->authManager->assignmentTable)
 			->select('user_id');
 
 		return User::find()
@@ -113,7 +109,7 @@ class UserBuddy extends Component {
 	 * @return array
 	 */
 	public function getRolesForUser($userId) {
-		return ArrayHelper::getColumn($this->_authManager->getAssignments($userId), 'roleName');
+		return ArrayHelper::getColumn($this->authManager->getRolesByUser($userId), 'name', false);
 	}
 
 	/**
@@ -122,16 +118,15 @@ class UserBuddy extends Component {
 	 * @return array
 	 */
 	public function getTranslatedRoleListForUser($userId) {
+		$output = [];
+
 		$roles = $this->getRolesForUser($userId);
 
-		foreach ($roles as &$role) {
-			$role = Yii::t('app.roles', $role);
+		foreach ($roles as $roleId) {
+			$output[$roleId] = ArrayHelper::getValue($this->getRoleList(), $roleId);
 		}
 
-		if (count($roles) == 0)
-			$roles[] = Yii::t('app.users', 'User');
-
-		return $roles;
+		return $output;
 	}
 
 	/**
@@ -157,25 +152,5 @@ class UserBuddy extends Component {
 		}
 
 		return $value;
-	}
-
-	/**
-	 * Генерирует хеш переданного пароля со сложностью, определяемой параметром модуля.
-	 *
-	 * @param $password
-	 *
-	 * @return string
-	 */
-	public function generatePasswordHash($password) {
-		return Yii::$app->security->generatePasswordHash($password, $this->workingModule->cost);
-	}
-
-	/**
-	 * @param $email
-	 *
-	 * @return string
-	 */
-	public function generateEmailHash($email) {
-		return md5($email . uniqid());
 	}
 }

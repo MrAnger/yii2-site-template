@@ -18,27 +18,36 @@ $userModel = $user->identity;
 
 $mainMenuItems = [
 	[
+		'label' => 'Главная',
+		'icon'  => '<i class="fa fa-home" aria-hidden="true"></i>',
+		'url'   => ['/site/index'],
+	],
+	[
 		'label' => 'Пользователи',
-		'icon'  => 'fa fa-users',
+		'icon'  => '<i class="fa fa-users" aria-hidden="true"></i>',
 		'items' => [
 			[
 				'label' => 'Все пользователи',
 				'url'   => ['/user/admin/index'],
-				'icon'  => 'fa fa-users',
+				'icon'  => '<i class="fa fa-users" aria-hidden="true"></i>',
 			],
-			/*[
-				'label' => 'Роли пользователей',
-				'url'   => ['/user-manager/index'],
-			],*/
 		],
 	],
 	[
-		'label' => 'Блоки',
-		'url'   => ['/block-manager/index'],
-	],
-	[
-		'label' => 'Robots.txt',
-		'url'   => ['/robots-txt-manager/index'],
+		'label' => 'Разное',
+		'icon'  => '<i class="fa fa-info-circle" aria-hidden="true"></i>',
+		'items' => [
+			[
+				'label' => 'Блоки',
+				'icon'  => '<i class="fa fa-square" aria-hidden="true"></i>',
+				'url'   => ['/block-manager/index'],
+			],
+			[
+				'label' => 'Robots.txt',
+				'icon'  => '<i class="fa fa-file-text-o" aria-hidden="true"></i>',
+				'url'   => ['/robots-txt-manager/index'],
+			],
+		],
 	],
 ];
 
@@ -52,64 +61,33 @@ $userIdentity = $user->identity;
 
 $roleList = $userBuddy->getTranslatedRoleListForUser($user->id)
 ?>
-<div class="media profile-left">
-    <a class="pull-left" href="<?= Url::to(['/user/settings/profile']) ?>">
-		<?= Html::img($userModel->profile->getAvatarUrl(48), [
-			'class' => 'img-rounded',
-			'alt'   => $userModel->username,
-		]) ?>
-    </a>
-
-    <div class="media-body">
-        <h4 class="media-heading"><b><?= $userIdentity->displayName ?></b><br/><?= $userIdentity->email ?></h4>
-        <small class="text-muted"><?= implode(", ", $roleList) ?></small>
-    </div>
-</div>
-<!-- media -->
-
-<h5 class="leftpanel-title">Меню</h5>
-<ul class="nav nav-pills nav-stacked">
-    <li>
-        <a href="<?= Yii::$app->homeUrl ?>">
-            <i class="fa fa-home"></i> <span>Главная страница</span>
+<div>
+    <div class="media profile-left">
+        <a class="pull-left" href="<?= Url::to(['/user/settings/profile']) ?>">
+			<?= Html::img($userModel->profile->getAvatarUrl(48), [
+				'class' => 'img-rounded',
+				'alt'   => $userModel->username,
+			]) ?>
         </a>
-    </li>
-	<?php foreach ($mainMenuItems as $item): ?>
-		<?php if (isset($item['items'])): ?>
-            <li class="parent">
-                <a href="#">
-                    <i class="<?= ArrayHelper::getValue($item, 'icon', 'fa fa-bars') ?>"></i>
-                    <span><?= $item['label'] ?></span>
 
-					<?php if (ArrayHelper::getValue($item, 'count', 0) > 0): ?>
-                        <i class="badge"><?= ArrayHelper::getValue($item, 'count', 0) ?></i>
-					<?php endif; ?>
-                </a>
+        <div class="media-body">
+            <h4 class="media-heading">
+                <b><?= $userIdentity->displayName ?></b>
+                <br/>
+				<?= $userIdentity->email ?>
+            </h4>
+            <small class="text-muted"><?= implode("<br>", $roleList) ?></small>
+        </div>
+    </div>
 
-                <ul class="children">
-					<?php foreach ($item['items'] as $item): ?>
-                        <li>
-                            <a href="<?= Url::to($item['url']) ?>">
-                                <i class="<?= ArrayHelper::getValue($item, 'icon', 'fa fa-home') ?>"></i>
-                                <span><?= $item['label'] ?></span>
-
-								<?php if (ArrayHelper::getValue($item, 'count', 0) > 0): ?>
-                                    <span class="badge"><?= ArrayHelper::getValue($item, 'count', 0) ?></span>
-								<?php endif; ?>
-                            </a>
-                        </li>
-					<?php endforeach ?>
-                </ul>
-            </li>
-			<?php continue;endif ?>
-        <li>
-            <a href="<?= Url::to($item['url']) ?>">
-                <i class="<?= ArrayHelper::getValue($item, 'icon', 'fa fa-bars') ?>"></i>
-                <span><?= $item['label'] ?></span>
-				<?php if (ArrayHelper::getValue($item, 'count', 0) > 0): ?>
-                    <span class="badge"><?= ArrayHelper::getValue($item, 'count', 0) ?></span>
-				<?php endif; ?>
-            </a>
-        </li>
-	<?php endforeach ?>
-</ul>
+    <h5 class="leftpanel-title">Меню</h5>
+	<?= \common\widgets\Menu::widget([
+		'items'           => $mainMenuItems,
+		'labelTemplate'   => '<a href="#">{icon}<span>{label}</span></a>',
+		'linkTemplate'    => '<a href="{url}">{icon}<span>{label}</span></a>',
+		'submenuTemplate' => "\n<ul class='children'>\n{items}\n</ul>\n",
+		'options'         => [
+			'class' => 'nav nav-pills nav-stacked',
+		],
+	]) ?>
+</div>

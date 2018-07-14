@@ -34,6 +34,11 @@ frontend.components.request.cookieValidationKey = backend.components.request.coo
 
 Основные параметры:
 ```
+common/config/params.php
+------------------------
+robotsTxtFiles - Массив с путями, до файлов robots.txt для их управления в соответствующем контроллере
+```
+```
 common/config/params-local.php
 ------------------------
 contactEmailSource - Email адрес, который будет написан в отправителе письма

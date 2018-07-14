@@ -3,42 +3,60 @@
 namespace backend\controllers;
 
 use Yii;
+use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 
 /**
  * @author MrAnger
  */
 class RobotsTxtManagerController extends BaseController {
-	public $file = '@frontend/web/robots.txt';
+	/**
+	 * @var string[]
+	 */
+	protected $files;
 
 	public function init() {
 		parent::init();
 
-		$this->file = Yii::getAlias($this->file);
+		$this->files = ArrayHelper::getValue(Yii::$app->params, 'robotsTxtFiles', []);
 	}
 
-	public function actionIndex() {
+	public function actionIndex($file = null) {
 		$request = Yii::$app->request;
 
-		if (!file_exists($this->file))
-			file_put_contents($this->file, '');
+		if (empty($this->files)) {
+			throw new InvalidConfigException("Массив files пуст. Настройте список файлов для редактирования.");
+		}
 
-		$content = file_get_contents($this->file);
+		if ($file === null) {
+			$file = ArrayHelper::getValue($this->files, 0);
+		}
+
+		$currentFile = $file;
+		$file = Yii::getAlias($file);
+
+		if (!file_exists($file))
+			file_put_contents($file, '');
+
+		$content = file_get_contents($file);
 
 		if ($request->isPost && $request->post('content') !== null) {
 			$newContent = $request->post('content');
 
-			$fp = fopen($this->file, "w+");
+			$fp = fopen($file, "w+");
 			ftruncate($fp, 0);
 			fputs($fp, $newContent);
 			fclose($fp);
 
 			Yii::$app->session->addFlash('success', 'Файл успешно изменен.');
 
-			return $this->redirect(['index']);
+			return $this->refresh();
 		}
 
 		return $this->render('index', [
-			'content' => $content,
+			'files'       => $this->files,
+			'currentFile' => $currentFile,
+			'content'     => $content,
 		]);
 	}
 }
