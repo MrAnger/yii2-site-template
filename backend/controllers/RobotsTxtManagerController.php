@@ -28,7 +28,7 @@ class RobotsTxtManagerController extends BaseController {
 			throw new InvalidConfigException("Массив files пуст. Настройте список файлов для редактирования.");
 		}
 
-		$file = ArrayHelper::getValue($this->files, "$fileIndex.path") . "123sdsa";
+		$file = ArrayHelper::getValue($this->files, "$fileIndex.path");
 		$file = Yii::getAlias($file);
 
 		if (!file_exists($file))
