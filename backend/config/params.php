@@ -2,7 +2,13 @@
 
 return [
 	'robotsTxtFiles' => [
-		'@frontend/web/robots.txt',
-		'@backend/web/robots.txt',
+		[
+			'path' => '@frontend/web/robots.txt',
+			'name' => 'Публичный сайт',
+		],
+		[
+			'path' => '@backend/web/robots.txt',
+			'name' => 'Админка',
+		],
 	],
 ];

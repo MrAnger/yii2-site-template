@@ -21,18 +21,14 @@ class RobotsTxtManagerController extends BaseController {
 		$this->files = ArrayHelper::getValue(Yii::$app->params, 'robotsTxtFiles', []);
 	}
 
-	public function actionIndex($file = null) {
+	public function actionIndex($fileIndex = 0) {
 		$request = Yii::$app->request;
 
 		if (empty($this->files)) {
 			throw new InvalidConfigException("Массив files пуст. Настройте список файлов для редактирования.");
 		}
 
-		if ($file === null) {
-			$file = ArrayHelper::getValue($this->files, 0);
-		}
-
-		$currentFile = $file;
+		$file = ArrayHelper::getValue($this->files, "$fileIndex.path") . "123sdsa";
 		$file = Yii::getAlias($file);
 
 		if (!file_exists($file))
@@ -54,9 +50,9 @@ class RobotsTxtManagerController extends BaseController {
 		}
 
 		return $this->render('index', [
-			'files'       => $this->files,
-			'currentFile' => $currentFile,
-			'content'     => $content,
+			'files'            => $this->files,
+			'currentFileIndex' => (string)$fileIndex,
+			'content'          => $content,
 		]);
 	}
 }

@@ -4,7 +4,7 @@
  * @var yii\web\View $this
  * @var string $content
  * @var string[] $files
- * @var string $currentFile
+ * @var integer $currentFileIndex
  */
 
 use yii\helpers\Html;
@@ -27,7 +27,7 @@ JS
 <div>
 	<?= Html::beginForm(['index'], 'get') ?>
     <div class="form-group">
-		<?= Html::dropDownList('file', $currentFile, ArrayHelper::map($files, function($item){return $item;}, function($item){return $item;}), [
+		<?= Html::dropDownList('fileIndex', $currentFileIndex, ArrayHelper::getColumn($files, 'name'), [
 			'id'    => 'robots-txt-selection-file',
 			'class' => 'form-control',
 		]) ?>
