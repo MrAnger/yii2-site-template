@@ -1,3 +1,8 @@
 <?php
 
-return [];
+return [
+	'robotsTxtFiles' => [
+		'@frontend/web/robots.txt',
+		'@backend/web/robots.txt',
+	],
+];
