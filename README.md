@@ -34,7 +34,7 @@ frontend.components.request.cookieValidationKey = backend.components.request.coo
 
 Основные параметры:
 ```
-common/config/params.php
+backend/config/params.php
 ------------------------
 robotsTxtFiles - Массив с путями, до файлов robots.txt для их управления в соответствующем контроллере
 ```
