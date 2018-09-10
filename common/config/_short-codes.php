@@ -16,4 +16,13 @@ return [
 			return Yii::$app->request->url;
 		}
 	},
+	'template'   => function ($attrs, $content, $tag) {
+		$filePath = ArrayHelper::getValue($attrs, 'file', false);
+
+		if (!$filePath) {
+			return null;
+		}
+
+		return Yii::$app->view->render(Yii::getAlias($filePath));
+	},
 ];
