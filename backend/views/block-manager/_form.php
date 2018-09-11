@@ -34,7 +34,7 @@ use yii\helpers\ArrayHelper;
         </div>
     </div>
 
-	<?= \common\widgets\html_editor\HtmlEditor::widget([
+	<?= \MrAnger\Yii2_HtmlEditorWidget\HtmlEditor::widget([
 		'form'      => $form,
 		'model'     => $block,
 		'attribute' => 'content',

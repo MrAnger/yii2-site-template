@@ -1,6 +1,6 @@
 <?php
 
-namespace common\widgets\html_editor;
+namespace MrAnger\Yii2_HtmlEditorWidget;
 
 use mranger\ckeditor\CKEditor;
 use trntv\aceeditor\AceEditor;
@@ -171,15 +171,17 @@ class HtmlEditor extends Widget {
 			],
 		];
 
-		$this->view->registerJs("htmlEditorInit('#$this->id', " . Json::encode($data) . ");");
+		$this->view->registerJs("htmlEditorInit('#$this->id', " . Json::encode($data) . ");"); // Важно что бы инициализация приложения прошла раньше, чем инициализация редакторов
 
-		return Html::tag('div', str_replace([
+		$html = Html::tag('div', str_replace([
 			'{buttons}',
 			'{editors}',
 		], [
 			$this->renderButtons(),
 			$this->renderEditors(),
 		], $this->layout), $this->options);
+
+		return $html;
 	}
 
 	/**

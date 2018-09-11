@@ -1,11 +1,15 @@
 <?php
 
-namespace common\widgets\html_editor;
+namespace MrAnger\Yii2_HtmlEditorWidget;
 
 use yii\web\AssetBundle;
 
 class HtmlEditorAsset extends AssetBundle {
-	public $sourcePath = "@common/widgets/html_editor/assets";
+	public function init() {
+		parent::init();
+
+		$this->sourcePath = __DIR__ . "/assets";
+	}
 
 	public $js = [
 		'html_editor.js',

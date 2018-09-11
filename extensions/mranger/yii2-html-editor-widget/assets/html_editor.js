@@ -49,7 +49,7 @@ function htmlEditorInit(el, data) {
                 aceEditor.getSession().on('change', function () {
                     vm.content = aceEditor.getSession().getValue();
                 });
-            }, 1500);
+            }, 1000);
 
             // Подписываемся на изменение значение CKEditor и получаем его инстанс
             setTimeout(function () {
@@ -58,7 +58,7 @@ function htmlEditorInit(el, data) {
                 $(vm.$el).find(vm.editorList["wysiwyg-editor"].input).change(function (e) {
                     vm.content = this.value;
                 });
-            }, 1500);
+            }, 1000);
         },
 
         watch: {

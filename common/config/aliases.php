@@ -10,4 +10,5 @@ return [
 	'@npm'   => '@vendor/npm-asset',
 
 	'MrAnger/Yii2_ImageManager' => dirname(dirname(__DIR__)) . '/extensions/mranger/yii2-image-manager',
+	'MrAnger/Yii2_HtmlEditorWidget' => dirname(dirname(__DIR__)) . '/extensions/mranger/yii2-html-editor-widget',
 ];
