@@ -23,6 +23,11 @@ $mainMenuItems = [
 		'url'   => ['/site/index'],
 	],
 	[
+		'label' => 'Страницы',
+		'icon'  => '<i class="fa fa-file-text-o" aria-hidden="true"></i>',
+		'url'   => ['/page-manager/update'],
+	],
+	[
 		'label' => 'Пользователи',
 		'icon'  => '<i class="fa fa-users" aria-hidden="true"></i>',
 		'items' => [
@@ -81,7 +86,7 @@ $roleList = $userBuddy->getTranslatedRoleListForUser($user->id)
     </div>
 
     <h5 class="leftpanel-title">Меню</h5>
-	<?= \common\widgets\Menu::widget([
+	<?= \backend\widgets\Menu::widget([
 		'items'           => $mainMenuItems,
 		'labelTemplate'   => '<a href="#">{icon}<span>{label}</span></a>',
 		'linkTemplate'    => '<a href="{url}">{icon}<span>{label}</span></a>',

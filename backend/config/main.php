@@ -29,7 +29,7 @@ return [
 				'rule'       => 'backend\controllers\usuario\RuleController',
 			],
 			'classMap'            => [
-				'LoginForm' => 'backend\models\LoginForm',
+				'LoginForm' => 'backend\models\forms\LoginForm',
 			],
 		],
 	],

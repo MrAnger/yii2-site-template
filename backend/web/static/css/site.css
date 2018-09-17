@@ -95,3 +95,72 @@ a.desc:after {
         display: block;
     }
 }
+
+/**
+ * Меню в разделе страниц
+ */
+.pages-menu, .pages-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pages-menu ul {
+    margin-left: 20px;
+}
+
+.pages-menu .item {
+    position: relative;
+    margin-bottom: 2px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #eee;
+    overflow-x: hidden;
+}
+
+.pages-menu .item a.link {
+    white-space: nowrap;
+}
+
+.pages-menu .item:hover {
+    background-color: lightgrey;
+}
+
+.pages-menu .item .actions {
+    display: none;
+    position: absolute;
+    right: 5px;
+    top: 6px;
+}
+
+.pages-menu .item .actions a {
+    color: grey;
+}
+
+.pages-menu .item .actions a:hover {
+    color: #337ab7;
+}
+
+.pages-menu .item:hover > .actions {
+    display: inline;
+}
+
+.pages-menu li.active > .item {
+    background-color: #428bca;
+}
+
+.pages-menu li.active > .item .link {
+    color: #fff;
+}
+
+.pages-menu li.active > .item .actions a {
+    color: #fff;
+}
+
+.pages-menu li.active > .item .actions a:hover {
+    color: gainsboro;
+}
+
+.pages-menu.drag-processing, .pages-menu ul.drag-processing {
+    min-height: 10px;
+}
