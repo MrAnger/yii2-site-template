@@ -77,6 +77,7 @@ class Page extends \yii\db\ActiveRecord {
 			[['image_cover_id'], 'exist', 'skipOnError' => true, 'targetClass' => Image::className(), 'targetAttribute' => ['image_cover_id' => 'id']],
 
 			[['is_enabled'], 'boolean'],
+			[['slug'], 'unique'],
 
 			[['name', 'slug', 'intro', 'content', 'params', 'published_at', 'meta_title', 'meta_description', 'meta_keywords', 'layout', 'file_template'], 'trim'],
 			[['name', 'slug', 'intro', 'content', 'params', 'published_at', 'meta_title', 'meta_description', 'meta_keywords', 'layout', 'file_template'], 'default'],
