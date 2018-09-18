@@ -7,6 +7,7 @@ use Yii;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 
 /**
@@ -166,7 +167,7 @@ class Page extends \yii\db\ActiveRecord {
 			foreach (explode("\r\n", $raw) as $line) {
 				$data = explode('=', trim($line));
 
-				if(empty($data[0])) {
+				if (empty($data[0])) {
 					break;
 				}
 
@@ -177,5 +178,27 @@ class Page extends \yii\db\ActiveRecord {
 		}
 
 		return $this->params;
+	}
+
+	/**
+	 * @param string $key
+	 * @param mixed $value
+	 */
+	public function setParam($key, $value) {
+		$array = $this->paramsAsArray;
+
+		$array[$key] = $value;
+
+		$this->params = Json::encode($array);
+	}
+
+	/**
+	 * @param string $key
+	 * @param mixed $defaultValue
+	 *
+	 * @return mixed
+	 */
+	public function getParam($key, $defaultValue = null) {
+		return ArrayHelper::getValue($this->paramsAsArray, $key, $defaultValue);
 	}
 }

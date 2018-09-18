@@ -28,10 +28,21 @@ class BlockManagerController extends BaseController {
 
 		$block = new Block();
 
-		if ($block->load($request->post()) && $block->save()) {
-			Yii::$app->session->addFlash('success', 'Блок успешно создан.');
+		if ($request->isPost) {
+			$block->load($request->post());
+			$block->convertParamsToJSON();
 
-			return $this->redirect(['update', 'id' => $block->id]);
+			foreach (['selectedEditorContent'] as $key) {
+				if ($request->post($key)) {
+					$block->setParam($key, $request->post($key));
+				}
+			}
+
+			if ($block->save()) {
+				Yii::$app->session->addFlash('success', 'Блок успешно создан.');
+
+				return $this->redirect(['update', 'id' => $block->id]);
+			}
 		}
 
 		return $this->render('create', [
@@ -44,10 +55,21 @@ class BlockManagerController extends BaseController {
 
 		$block = $this->findModel($id);
 
-		if ($block->load($request->post()) && $block->save()) {
-			Yii::$app->session->addFlash('success', 'Блок успешно изменен.');
+		if ($request->isPost) {
+			$block->load($request->post());
+			$block->convertParamsToJSON();
 
-			return $this->redirect(['update', 'id' => $block->id]);
+			foreach (['selectedEditorContent'] as $key) {
+				if ($request->post($key)) {
+					$block->setParam($key, $request->post($key));
+				}
+			}
+
+			if ($block->save()) {
+				Yii::$app->session->addFlash('success', 'Блок успешно изменен.');
+
+				return $this->redirect(['update', 'id' => $block->id]);
+			}
 		}
 
 		return $this->render('update', [

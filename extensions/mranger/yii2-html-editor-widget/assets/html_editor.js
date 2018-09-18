@@ -18,11 +18,19 @@ function htmlEditorInit(el, data) {
             var vm = this;
 
             // Получаем выбранный по умолчанию тип редактора
-            vm.selectedType = $(vm.$el).find('input[name*="source-view"]:checked').val();
+            vm.selectedType = $(vm.$el).find('input[name*="selectedEditor"]:checked').val();
 
             // Подписываемся на событие изменения выбранного редактора
-            $(vm.$el).find('input[name*="source-view"]').change(function (e) {
-                vm.selectedType = $(this).val();
+            $(vm.$el).find('input[name*="selectedEditor"]').change(function (e) {
+                if ($(this).val() == 'wysiwyg-editor') {
+                    if (confirm("Визуальный редактор может изменить HTML код. Вы точно хотите переключиться на визуальный редактор?")) {
+                        vm.selectedType = $(this).val();
+                    } else {
+                        $(vm.$el).find('input[name*="selectedEditor"][value=html-editor]').closest('label').click();
+                    }
+                } else {
+                    vm.selectedType = $(this).val();
+                }
             });
 
             // Получаем текущее значение из редактора по умолчанию

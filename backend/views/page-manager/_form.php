@@ -51,11 +51,14 @@ $imageManager = Yii::$app->imageManager;
 				'form'             => $form,
 				'model'            => $model,
 				'attribute'        => 'intro',
-				'defaultEditor'    => \MrAnger\Yii2_HtmlEditorWidget\HtmlEditor::WYSIWYG_EDITOR,
+				'nameAttribute'    => 'selectedEditorIntro',
+				'defaultEditor'    => $model->getParam('selectedEditorIntro', \MrAnger\Yii2_HtmlEditorWidget\HtmlEditor::WYSIWYG_EDITOR),
 				'ckEditorOptions'  => [
 					'preset' => 'minimal',
 				],
 				'aceEditorOptions' => [
+					'mode'             => 'php',
+					'theme'            => 'chrome',
 					'containerOptions' => [
 						'style' => 'width: 100%; min-height: 250px;',
 					],
@@ -66,7 +69,8 @@ $imageManager = Yii::$app->imageManager;
 				'form'          => $form,
 				'model'         => $model,
 				'attribute'     => 'content',
-				'defaultEditor' => \MrAnger\Yii2_HtmlEditorWidget\HtmlEditor::WYSIWYG_EDITOR,
+				'nameAttribute' => 'selectedEditorContent',
+				'defaultEditor' => $model->getParam('selectedEditorContent', \MrAnger\Yii2_HtmlEditorWidget\HtmlEditor::WYSIWYG_EDITOR),
 			]) ?>
         </div>
 

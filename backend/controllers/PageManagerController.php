@@ -7,6 +7,7 @@ use common\models\Page;
 use common\models\PageTree;
 use Yii;
 use yii\base\Model;
+use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
@@ -20,12 +21,14 @@ class PageManagerController extends BaseController {
 	public function actionUpdate($id = null) {
 		if ($id === null) {
 			/** @var PageTree $model */
-			$model = PageTree::find()
-				->roots()
+			$root = PageTree::findOne(1);
+
+			/** @var PageTree $pageTree */
+			$pageTree = $root->children(1)
 				->one();
 
-			if ($model->page_id != 1) {
-				return $this->redirect(['update', 'id' => $model->page_id]);
+			if ($pageTree !== null) {
+				return $this->redirect(['update', 'id' => $pageTree->page_id]);
 			}
 
 			return $this->redirect(['create']);
@@ -33,12 +36,25 @@ class PageManagerController extends BaseController {
 
 		$model = $this->findModel($id);
 
+		$request = Yii::$app->request;
+
 		$imageManager = Yii::$app->imageManager;
 		$imageUploadForm = new ImageUploadForm();
 
 		if (Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
 			$model->convertParamsToJSON();
+
+			if ($model->published_at === null) {
+				$model->published_at = new Expression("NOW()");
+			}
+
+			foreach (['selectedEditorIntro', 'selectedEditorContent'] as $key) {
+				if ($request->post($key)) {
+					$model->setParam($key, $request->post($key));
+				}
+			}
+
 			$imageUploadForm->load(Yii::$app->request->post());
 
 			$imageUploadForm->file = UploadedFile::getInstance($imageUploadForm, 'file');
@@ -93,12 +109,25 @@ class PageManagerController extends BaseController {
 			$parentModel = $this->findModel($parentId);
 		}
 
+		$request = Yii::$app->request;
+
 		$imageManager = Yii::$app->imageManager;
 		$imageUploadForm = new ImageUploadForm();
 
 		if (Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
 			$model->convertParamsToJSON();
+
+			if ($model->published_at === null) {
+				$model->published_at = new Expression("NOW()");
+			}
+
+			foreach (['selectedEditorIntro', 'selectedEditorContent'] as $key) {
+				if ($request->post($key)) {
+					$model->setParam($key, $request->post($key));
+				}
+			}
+
 			$imageUploadForm->load(Yii::$app->request->post());
 
 			$imageUploadForm->file = UploadedFile::getInstance($imageUploadForm, 'file');

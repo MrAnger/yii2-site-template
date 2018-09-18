@@ -19,7 +19,7 @@ class m180611_053158_image extends Migration {
 			'title'       => $this->string(255)->null()->defaultValue(null),
 			'description' => $this->text()->null()->defaultValue(null),
 			'created_at'  => $this->timestamp()->notNull()->defaultExpression("CURRENT_TIMESTAMP"),
-			'updated_at'  => $this->timestamp()->notNull()->defaultValue('0000-00-00 00:00:00'),
+			'updated_at'  => $this->timestamp()->notNull()->defaultExpression("CURRENT_TIMESTAMP"),
 		], $tableOptions);
 
 	}

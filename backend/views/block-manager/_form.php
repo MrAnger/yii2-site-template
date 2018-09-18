@@ -35,9 +35,16 @@ use yii\helpers\ArrayHelper;
     </div>
 
 	<?= \MrAnger\Yii2_HtmlEditorWidget\HtmlEditor::widget([
-		'form'      => $form,
-		'model'     => $block,
-		'attribute' => 'content',
+		'form'          => $form,
+		'model'         => $block,
+		'attribute'     => 'content',
+		'nameAttribute' => 'selectedEditorContent',
+		'defaultEditor' => $block->getParam('selectedEditorContent', \MrAnger\Yii2_HtmlEditorWidget\HtmlEditor::HTML_EDITOR),
+	]) ?>
+
+	<?= $form->field($block, 'params')->textarea([
+		'rows'  => 7,
+		'value' => $block->paramsAsString,
 	]) ?>
 
     <div class="form-group text-right">

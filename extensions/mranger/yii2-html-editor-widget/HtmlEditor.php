@@ -42,6 +42,11 @@ class HtmlEditor extends Widget {
 	public $attribute;
 
 	/**
+	 * @var string
+	 */
+	public $nameAttribute;
+
+	/**
 	 * @var array
 	 */
 	public $options = [];
@@ -150,6 +155,10 @@ class HtmlEditor extends Widget {
 					], $this->ckEditorOptions));
 			};
 		}
+
+		if (!in_array($this->defaultEditor, array_keys($this->editorLabels))) {
+			$this->defaultEditor = self::HTML_EDITOR;
+		}
 	}
 
 	/**
@@ -223,7 +232,7 @@ class HtmlEditor extends Widget {
 		$labelOptions = ArrayHelper::getValue($options, 'labelOptions', []);
 		unset($options['labelOptions']);
 
-		return Html::tag('div', Html::radioList('source-view-' . $this->id, $this->defaultEditor, $this->editorLabels, [
+		return Html::tag('div', Html::radioList($this->getFullNameAttribute(), $this->defaultEditor, $this->editorLabels, [
 			'tag'  => false,
 			'item' => function ($index, $label, $name, $checked, $value) use ($inputOptions, $labelOptions) {
 				$_labelOptions = $labelOptions;
@@ -241,5 +250,18 @@ class HtmlEditor extends Widget {
 				));
 			},
 		]), $options);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getFullNameAttribute() {
+		$nameAttribute = "selectedEditor-$this->id";
+
+		if (!empty($this->nameAttribute)) {
+			$nameAttribute = $this->nameAttribute;
+		}
+
+		return $nameAttribute;
 	}
 }

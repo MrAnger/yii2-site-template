@@ -26,13 +26,14 @@ class m180911_094054_page extends Migration {
 			'params'           => $this->text()->null()->defaultValue(null),
 			'published_at'     => $this->timestamp()->notNull()->defaultExpression("CURRENT_TIMESTAMP"),
 			'created_at'       => $this->timestamp()->notNull()->defaultExpression("CURRENT_TIMESTAMP"),
-			'updated_at'       => $this->timestamp()->notNull()->defaultValue('0000-00-00 00:00:00'),
+			'updated_at'       => $this->timestamp()->notNull()->defaultExpression("CURRENT_TIMESTAMP"),
 		]);
 
 		$this->addForeignKey('fk_image_id_to_image', '{{%page}}', ['image_cover_id'], '{{%image}}', ['id'], 'SET NULL', 'CASCADE');
 
 		$this->insert('{{%page}}', [
 			'name' => 'This is root page, not visible and usable, created for page tree structure.',
+			'slug' => 'root',
 		]);
 	}
 
