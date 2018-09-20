@@ -3,9 +3,7 @@
 use himiklab\sitemap\behaviors\SitemapBehavior;
 use yii\helpers\Url;
 
-$urls = [
-	'/',
-];
+$urls = [];
 
 $output = [];
 $defaultItem = [

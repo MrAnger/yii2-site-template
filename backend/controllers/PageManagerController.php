@@ -9,6 +9,7 @@ use Yii;
 use yii\base\Model;
 use yii\db\Expression;
 use yii\helpers\ArrayHelper;
+use yii\helpers\FileHelper;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -45,10 +46,6 @@ class PageManagerController extends BaseController {
 			$model->load(Yii::$app->request->post());
 			$model->convertParamsToJSON();
 
-			if ($model->published_at === null) {
-				$model->published_at = new Expression("NOW()");
-			}
-
 			foreach (['selectedEditorIntro', 'selectedEditorContent'] as $key) {
 				if ($request->post($key)) {
 					$model->setParam($key, $request->post($key));
@@ -60,6 +57,10 @@ class PageManagerController extends BaseController {
 			$imageUploadForm->file = UploadedFile::getInstance($imageUploadForm, 'file');
 
 			if (Model::validateMultiple([$model, $imageUploadForm])) {
+				if ($model->published_at === null) {
+					$model->published_at = new Expression("NOW()");
+				}
+
 				$transaction = Yii::$app->db->beginTransaction();
 
 				try {
@@ -95,6 +96,8 @@ class PageManagerController extends BaseController {
 			'model'           => $model,
 			'imageUploadForm' => $imageUploadForm,
 			'menu'            => $this->getMenuTree(),
+			'layoutList'      => $this->getFileList('@frontend/views/layouts'),
+			'templateList'    => $this->getFileList('@frontend/views/site'),
 		]);
 	}
 
@@ -118,10 +121,6 @@ class PageManagerController extends BaseController {
 			$model->load(Yii::$app->request->post());
 			$model->convertParamsToJSON();
 
-			if ($model->published_at === null) {
-				$model->published_at = new Expression("NOW()");
-			}
-
 			foreach (['selectedEditorIntro', 'selectedEditorContent'] as $key) {
 				if ($request->post($key)) {
 					$model->setParam($key, $request->post($key));
@@ -133,6 +132,10 @@ class PageManagerController extends BaseController {
 			$imageUploadForm->file = UploadedFile::getInstance($imageUploadForm, 'file');
 
 			if (Model::validateMultiple([$model, $imageUploadForm])) {
+				if ($model->published_at === null) {
+					$model->published_at = new Expression("NOW()");
+				}
+
 				$transaction = Yii::$app->db->beginTransaction();
 
 				try {
@@ -177,6 +180,8 @@ class PageManagerController extends BaseController {
 			'model'           => $model,
 			'imageUploadForm' => $imageUploadForm,
 			'menu'            => $this->getMenuTree(),
+			'layoutList'      => $this->getFileList('@frontend/views/layouts'),
+			'templateList'    => $this->getFileList('@frontend/views/site'),
 		]);
 	}
 
@@ -299,6 +304,43 @@ class PageManagerController extends BaseController {
 		$pages = $treeMaker($rootPages, null, 0);
 
 		return ArrayHelper::getValue($pages, '0.items');
+	}
+
+	/**
+	 * @param string $dir
+	 *
+	 * @return array
+	 */
+	protected function getFileList($dir) {
+		$fileList = FileHelper::findFiles(Yii::getAlias($dir), [
+			'recursive' => false,
+			'filter'    => function ($path) {
+				$fileName = basename($path);
+
+				if (substr($fileName, 0, 1) == "_") {
+					return false;
+				}
+
+				return true;
+			},
+		]);
+
+		array_walk($fileList, function (&$item) {
+			$item = basename($item);
+		});
+
+		sort($fileList);
+
+		array_walk($fileList, function (&$item) use ($dir) {
+			$item = [
+				'name' => basename($item, '.php'),
+				'path' => "$dir/$item",
+			];
+		});
+
+		$fileList = ArrayHelper::map($fileList, 'path', 'name');
+
+		return $fileList;
 	}
 
 	/**

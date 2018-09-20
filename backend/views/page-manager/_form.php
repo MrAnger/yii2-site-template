@@ -4,6 +4,8 @@
  * @var yii\web\View $this
  * @var \common\models\Page $model
  * @var \common\models\forms\ImageUploadForm $imageUploadForm
+ * @var array $layoutList
+ * @var array $templateList
  */
 
 use yii\widgets\ActiveForm;
@@ -110,16 +112,12 @@ $imageManager = Yii::$app->imageManager;
             <div class="row">
                 <div class="col-md-6">
 					<?= $form->field($model, 'layout')
-						->textInput([
-							'maxlength' => true,
-						])
+						->dropDownList([null => 'По умолчанию'] + $layoutList)
 					?>
                 </div>
                 <div class="col-md-6">
 					<?= $form->field($model, 'file_template')
-						->textInput([
-							'maxlength' => true,
-						])
+						->dropDownList([null => 'По умолчанию'] + $templateList)
 					?>
                 </div>
             </div>

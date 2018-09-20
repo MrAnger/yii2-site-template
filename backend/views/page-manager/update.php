@@ -5,6 +5,8 @@
  * @var \common\models\Page $model
  * @var \common\models\forms\ImageUploadForm $imageUploadForm
  * @var array $menu
+ * @var array $layoutList
+ * @var array $templateList
  */
 
 use yii\helpers\Html;
@@ -30,6 +32,8 @@ $this->params['breadcrumbs'] = [
 		<?= $this->render('_form', [
 			'model'           => $model,
 			'imageUploadForm' => $imageUploadForm,
+			'layoutList'      => $layoutList,
+			'templateList'    => $templateList,
 		]) ?>
     </div>
 </div>

@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use himiklab\sitemap\behaviors\SitemapBehavior;
 use MrAnger\Yii2_ImageManager\models\Image;
 use Yii;
 use yii\behaviors\SluggableBehavior;
@@ -9,6 +10,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "{{%page}}".
@@ -52,6 +54,31 @@ class Page extends \yii\db\ActiveRecord {
 				'slugAttribute' => 'slug',
 				'immutable'     => true,
 				'ensureUnique'  => true,
+			],
+			'sitemap'    => [
+				'class'       => SitemapBehavior::className(),
+				'scope'       => function ($query) {
+					/** @var \yii\db\ActiveQuery $query */
+					$query->andWhere([
+						'AND',
+						['<>', 'slug', 'root'],
+						['=', 'is_enabled', 1],
+					]);
+				},
+				'dataClosure' => function (Page $model) {
+					$url = Url::to(['/site/view-page-by-slug', 'slug' => $model->slug], true);
+
+					if ($model->slug == 'index') {
+						$url = Url::to(['/site/index'], true);
+					}
+
+					return [
+						'loc'        => $url,
+						'lastmod'    => strtotime($model->updated_at),
+						'changefreq' => SitemapBehavior::CHANGEFREQ_WEEKLY,
+						'priority'   => 0.8,
+					];
+				},
 			],
 		];
 	}

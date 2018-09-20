@@ -14,6 +14,8 @@ return [
 		''           => '/site/index',
 		'index.html' => '/',
 
+		['pattern' => '<slug>', 'route' => '/site/view-page-by-slug', 'suffix' => '/'],
+
 		['pattern' => 'sitemap', 'route' => 'sitemap/default/index', 'suffix' => '.xml'],
 	],
 ];

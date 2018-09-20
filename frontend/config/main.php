@@ -21,7 +21,9 @@ $config = [
 			],
 		],
 		'sitemap' => [
-			'models' => [],
+			'models' => [
+				'common\models\Page',
+			],
 			'urls'   => require(__DIR__ . '/sitemap-urls.php'),
 		],
 	],
