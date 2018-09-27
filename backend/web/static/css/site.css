@@ -164,3 +164,32 @@ a.desc:after {
 .pages-menu.drag-processing, .pages-menu ul.drag-processing {
     min-height: 10px;
 }
+
+.page-image-gallery-item {
+    padding: 5px;
+}
+
+.page-image-gallery-item .img-wrapper {
+    display: block;
+    position: relative;
+    text-align: center;
+}
+
+.page-image-gallery-item img {
+    width: 100%;
+    max-width: max-content;
+    height: auto;
+}
+
+.page-image-gallery-item .actions {
+    display: none;
+    position: absolute;
+    top: 7px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.page-image-gallery-item:hover .actions {
+    display: block;
+}

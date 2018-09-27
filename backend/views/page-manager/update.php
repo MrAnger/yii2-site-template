@@ -5,6 +5,7 @@
  * @var \common\models\Page $model
  * @var \common\models\forms\ImageUploadForm $imageUploadForm
  * @var array $menu
+ * @var \yii\data\ActiveDataProvider $galleryImageDataProvider
  * @var array $layoutList
  * @var array $templateList
  */
@@ -30,10 +31,11 @@ $this->params['breadcrumbs'] = [
 
     <div class="col-md-9">
 		<?= $this->render('_form', [
-			'model'           => $model,
-			'imageUploadForm' => $imageUploadForm,
-			'layoutList'      => $layoutList,
-			'templateList'    => $templateList,
+			'model'                    => $model,
+			'imageUploadForm'          => $imageUploadForm,
+			'galleryImageDataProvider' => $galleryImageDataProvider,
+			'layoutList'               => $layoutList,
+			'templateList'             => $templateList,
 		]) ?>
     </div>
 </div>

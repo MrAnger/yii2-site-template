@@ -4,13 +4,18 @@ namespace backend\controllers;
 
 use common\models\forms\ImageUploadForm;
 use common\models\Page;
+use common\models\PageGalleryImage;
 use common\models\PageTree;
+use MrAnger\Yii2_ImageManager\models\Image;
 use Yii;
 use yii\base\Model;
+use yii\data\ActiveDataProvider;
 use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 use yii\helpers\Url;
+use yii\helpers\VarDumper;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\UploadedFile;
@@ -41,6 +46,14 @@ class PageManagerController extends BaseController {
 
 		$imageManager = Yii::$app->imageManager;
 		$imageUploadForm = new ImageUploadForm();
+
+		$galleryImageDataProvider = new ActiveDataProvider([
+			'query'      => PageGalleryImage::find()
+				->joinWith('image')
+				->where(['page_id' => $model->id])
+				->orderBy(['sort_order' => SORT_ASC]),
+			'pagination' => false,
+		]);
 
 		if (Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
@@ -93,11 +106,12 @@ class PageManagerController extends BaseController {
 		}
 
 		return $this->render('update', [
-			'model'           => $model,
-			'imageUploadForm' => $imageUploadForm,
-			'menu'            => $this->getMenuTree(),
-			'layoutList'      => $this->getFileList('@frontend/views/layouts'),
-			'templateList'    => $this->getFileList('@frontend/views/site'),
+			'model'                    => $model,
+			'imageUploadForm'          => $imageUploadForm,
+			'menu'                     => $this->getMenuTree(),
+			'galleryImageDataProvider' => $galleryImageDataProvider,
+			'layoutList'               => $this->getFileList('@frontend/views/layouts'),
+			'templateList'             => $this->getFileList('@frontend/views/site'),
 		]);
 	}
 
@@ -110,6 +124,8 @@ class PageManagerController extends BaseController {
 		$parentModel = null;
 		if ($parentId !== null) {
 			$parentModel = $this->findModel($parentId);
+
+			$model->layout = $parentModel->layout;
 		}
 
 		$request = Yii::$app->request;
@@ -267,6 +283,126 @@ class PageManagerController extends BaseController {
 		}
 
 		return $output;
+	}
+
+	public function actionUploadGalleryImage($pageId) {
+		Yii::$app->response->format = Response::FORMAT_JSON;
+
+		$pageModel = $this->findModel($pageId);
+
+		$file = UploadedFile::getInstanceByName("file");
+
+		if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE)
+			throw new BadRequestHttpException("Загрузка файла не удалась.");
+
+		$imageUploadForm = new ImageUploadForm([
+			'file' => $file,
+		]);
+
+		if (!$imageUploadForm->validate()) {
+			throw new BadRequestHttpException(implode("\n", $imageUploadForm->getErrorSummary(true)));
+		}
+
+		$imageModel = Yii::$app->imageManager->upload($file);
+
+		if ($imageModel !== null) {
+			$link = new PageGalleryImage([
+				'page_id'  => $pageModel->id,
+				'image_id' => $imageModel->id,
+			]);
+
+			return (boolean)$link->save();
+		}
+
+		throw new BadRequestHttpException("При сохранении файла возникла непредвиденная ошибка.");
+	}
+
+	public function actionGalleryImageSaveOrder($id, $order) {
+		Yii::$app->response->format = Response::FORMAT_JSON;
+
+		$output = ['status' => true];
+
+		$model = PageGalleryImage::findOne($id);
+
+		if ($model === null) {
+			throw new NotFoundHttpException("Изображение[ID: $id] не найдено.");
+		}
+
+		$output['status'] = (boolean)$model->moveToPosition($order);
+
+		return $output;
+	}
+
+	public function actionGalleryImageUpdate() {
+		Yii::$app->response->format = Response::FORMAT_JSON;
+
+		$output = ['status' => true];
+
+		$id = Yii::$app->request->post('id');
+
+		/** @var PageGalleryImage $model */
+		$model = PageGalleryImage::findOne($id);
+
+		if ($model === null) {
+			throw new NotFoundHttpException("Изображение[ID: $id] не найдено.");
+		}
+
+		$output['status'] = (boolean)($model->image->load(Yii::$app->request->post()) && $model->image->save());
+
+		return $output;
+	}
+
+	public function actionGalleryImageDelete($id) {
+		Yii::$app->response->format = Response::FORMAT_JSON;
+
+		$output = ['status' => true];
+
+		/** @var PageGalleryImage $model */
+		$model = PageGalleryImage::findOne($id);
+
+		if ($model === null) {
+			throw new NotFoundHttpException("Изображение[ID: $id] не найдено.");
+		}
+
+		$imageModel = $model->image;
+
+		$output['status'] = (boolean)$model->delete();
+
+		if ($output['status']) {
+			try {
+				Yii::$app->imageManager->deleteImage($imageModel);
+			} catch (\Exception $e) {
+				Yii::error("Ошбика при удалении изображения[ID: $imageModel->id] у страницы[ID: $model->page_id].\n" .
+					$e->getCode() . ": " . $e->getMessage() . "\n" . $e->getTraceAsString()
+				);
+			}
+		}
+
+		return $output;
+	}
+
+	public function actionPageCoverDelete($id) {
+		Yii::$app->response->format = Response::FORMAT_JSON;
+
+		$model = $this->findModel($id);
+
+		$imageCover = $model->imageCover;
+
+		$result = (boolean)$model->updateAttributes([
+			'image_cover_id' => null,
+		]);
+
+		if ($result && $imageCover) {
+			try {
+				Yii::$app->imageManager->deleteImage($imageCover);
+			} catch (\Exception $e) {
+				Yii::error("Ошбика при удалении изображения[ID: $imageCover->id] у страницы[ID: $model->id].\n" .
+					$e->getCode() . ": " . $e->getMessage() . "\n" . $e->getTraceAsString()
+				);
+			}
+		}
+
+		return $this->redirect(['update', 'id' => $model->id]);
 	}
 
 	/**
