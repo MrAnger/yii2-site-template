@@ -16,7 +16,7 @@ $user = Yii::$app->user;
 /** @var \common\models\User $userModel */
 $userModel = $user->identity;
 
-$mainMenuItems = [
+$menuItems = [
 	[
 		'label' => 'Главная',
 		'icon'  => '<i class="fa fa-home" aria-hidden="true"></i>',
@@ -87,10 +87,7 @@ $roleList = $userBuddy->getTranslatedRoleListForUser($user->id)
 
     <h5 class="leftpanel-title">Меню</h5>
 	<?= \backend\widgets\Menu::widget([
-		'items'           => $mainMenuItems,
-		'labelTemplate'   => '<a href="#">{icon}<span>{label}</span></a>',
-		'linkTemplate'    => '<a href="{url}">{icon}<span>{label}</span></a>',
-		'submenuTemplate' => "\n<ul class='children'>\n{items}\n</ul>\n",
+		'items'           => $menuItems,
 		'options'         => [
 			'class' => 'nav nav-pills nav-stacked',
 		],
