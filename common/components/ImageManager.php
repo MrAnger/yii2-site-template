@@ -55,7 +55,7 @@ class ImageManager extends \MrAnger\Yii2_ImageManager\ImageManager {
 
 		foreach ($output as $imageId => &$data) {
 			foreach ($data as $presetId => &$url) {
-				$url = Yii::$app->frontendUrlManager->createAbsoluteUrl($this->fixThumbnailUrl($url), true);
+				$url = $this->fixThumbnailUrl($url);
 
 				unset($url);
 			}
