@@ -165,13 +165,20 @@ a.desc:after {
     min-height: 10px;
 }
 
+.page-image-gallery-list {
+    margin-top: 10px;
+    text-align: center;
+}
+
 .page-image-gallery-item {
-    padding: 5px;
+    display: inline-block;
+    position: relative;
+    padding-right: 7px;
+    padding-bottom: 7px;
 }
 
 .page-image-gallery-item .img-wrapper {
     display: block;
-    position: relative;
     text-align: center;
 }
 

@@ -107,23 +107,23 @@ $this->registerJs("initSortableGalleryImageList();");
 	]) ?>
 
 	<?= \yii\widgets\ListView::widget([
-		'id'               => 'gallery-image-list',
-		'dataProvider'     => $galleryImageDataProvider,
-		'summary'          => false,
-		'emptyText' => false,
-		'options'          => [
-			'class' => 'row',
+		'id'           => 'gallery-image-list',
+		'dataProvider' => $galleryImageDataProvider,
+		'summary'      => false,
+		'emptyText'    => false,
+		'options'      => [
+			'class' => 'page-image-gallery-list',
 		],
-		'itemOptions'      => function (\common\models\PageGalleryImage $model, $key, $index, $widget) {
+		'itemOptions'  => function (\common\models\PageGalleryImage $model, $key, $index, $widget) {
 			$output = [
-				'class'            => 'col-md-3 page-image-gallery-item',
+				'class'            => 'page-image-gallery-item',
 				'data-title'       => $model->image->title,
 				'data-description' => $model->image->description,
 			];
 
 			return $output;
 		},
-		'itemView'         => function (\common\models\PageGalleryImage $model, $key, $index, $widget) use ($imageManager) {
+		'itemView'     => function (\common\models\PageGalleryImage $model, $key, $index, $widget) use ($imageManager) {
 			$html = Html::a(
 				Html::img($imageManager->getThumbnailUrl($model->image, 'backend-page-gallery-list-cover')),
 				$imageManager->getOriginalUrl($model->image),
