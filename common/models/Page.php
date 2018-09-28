@@ -34,6 +34,7 @@ use yii\helpers\Url;
  *
  * @property Image $imageCover
  * @property PageTree $tree
+ * @property PageGalleryImage[] $galleryImageLinks
  *
  * @property array $paramsAsArray
  * @property string $paramsAsString
@@ -150,6 +151,17 @@ class Page extends \yii\db\ActiveRecord {
 	}
 
 	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getGalleryImageLinks() {
+		return $this->hasMany(PageGalleryImage::className(), ['page_id' => 'id'])
+			->joinWith('image')
+			->orderBy([
+				PageGalleryImage::tableName() . ".sort_order" => SORT_ASC,
+			]);
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getParamsAsArray() {
@@ -228,5 +240,12 @@ class Page extends \yii\db\ActiveRecord {
 	 */
 	public function getParam($key, $defaultValue = null) {
 		return ArrayHelper::getValue($this->paramsAsArray, $key, $defaultValue);
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function getHelpParams() {
+		return [];
 	}
 }

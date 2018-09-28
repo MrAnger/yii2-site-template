@@ -13,6 +13,16 @@ use yii\helpers\Html;
  */
 
 $imageManager = Yii::$app->imageManager;
+
+$helpParamsAsString = function ($paramList) {
+	$html = "";
+
+	foreach ($paramList as $paramData) {
+		$html .= "<div><b>$paramData[0]</b> - $paramData[1]</div>";
+	}
+
+	return $html;
+};
 ?>
 <div id="tab-panel-other" class="tab-pane fade">
 	<?= $form->field($model, 'is_enabled')->checkbox() ?>
@@ -34,8 +44,10 @@ $imageManager = Yii::$app->imageManager;
         </div>
     </div>
 
-	<?= $form->field($model, 'params')->textarea([
-		'rows'  => 7,
-		'value' => $model->paramsAsString,
-	]) ?>
+	<?= $form->field($model, 'params')
+		->hint($helpParamsAsString(\common\models\Page::getHelpParams()))
+		->textarea([
+			'rows'  => 7,
+			'value' => $model->paramsAsString,
+		]) ?>
 </div>
