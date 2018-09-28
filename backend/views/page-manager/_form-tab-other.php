@@ -45,7 +45,7 @@ $helpParamsAsString = function ($paramList) {
     </div>
 
 	<?= $form->field($model, 'params')
-		->hint($helpParamsAsString(\common\models\Page::getHelpParams()))
+		->hint("<pre>" . $helpListAsString(\common\models\Page::getHelpParams()) . "</pre>")
 		->textarea([
 			'rows'  => 7,
 			'value' => $model->paramsAsString,
