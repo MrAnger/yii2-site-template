@@ -34,6 +34,36 @@ class ImageManager extends \MrAnger\Yii2_ImageManager\ImageManager {
 	}
 
 	/**
+	 * @param string $file
+	 * @param string|array $presetId
+	 *
+	 * @return string
+	 *
+	 * @throws
+	 */
+	public function getThumbnailUrlByFile($file, $presetId) {
+		$file = Yii::getAlias($file);
+
+		if (!file_exists($file)) {
+			return null;
+		}
+
+		/** @var Thumbnail $thumbnailSystem */
+		$thumbnailSystem = Yii::$app->get('thumbnail');
+
+		/** @var Thumbnail $thumbnailTemp */
+		$thumbnailTemp = Yii::createObject([
+			'class'     => Thumbnail::className(),
+			'basePath'  => dirname($file),
+			'cachePath' => $thumbnailSystem->cachePath,
+		]);
+
+		$url = $thumbnailTemp->url(basename($file), $this->getPresetDefinition($presetId));
+
+		return Yii::$app->frontendUrlManager->createAbsoluteUrl($this->fixThumbnailUrl($url), true);
+	}
+
+	/**
 	 * @param integer[] $imageIdList
 	 *
 	 * @return array

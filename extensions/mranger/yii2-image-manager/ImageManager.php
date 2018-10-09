@@ -229,11 +229,15 @@ class ImageManager extends Component {
 	}
 
 	/**
-	 * @param string $id
+	 * @param string|array $id
 	 *
 	 * @return array
 	 */
 	protected function getPresetDefinition($id) {
-		return ArrayHelper::getValue($this->presets, $id, []);
+		if (!is_array($id)) {
+			return ArrayHelper::getValue($this->presets, $id, []);
+		}
+
+		return $id;
 	}
 }

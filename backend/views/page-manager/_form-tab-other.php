@@ -14,7 +14,7 @@ use yii\helpers\Html;
 
 $imageManager = Yii::$app->imageManager;
 
-$helpParamsAsString = function ($paramList) {
+$helpListAsString = function ($paramList) {
 	$html = "";
 
 	foreach ($paramList as $paramData) {

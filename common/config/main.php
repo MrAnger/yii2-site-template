@@ -125,14 +125,14 @@ return [
 		'imageManager'     => [
 			'class'         => \common\components\ImageManager::class,
 			'presets'       => require(__DIR__ . '/_thumbnail-presets.php'),
-			'uploadPath'    => dirname(dirname(__DIR__)) . '/frontend/web/uploads/images/',
-			'uploadUrl'     => 'uploads/images/',
-			'thumbnailsUrl' => 'uploads/images/thumbnails',
+			'uploadPath'    => dirname(dirname(__DIR__)) . '/frontend/web/image-manager/images/',
+			'uploadUrl'     => 'image-manager/images/',
+			'thumbnailsUrl' => 'image-manager/images/thumbnails',
 		],
 		'thumbnail'        => [
 			'class'     => \sadovojav\image\Thumbnail::class,
-			'basePath'  => dirname(dirname(__DIR__)) . '/frontend/web/uploads/images',
-			'cachePath' => dirname(dirname(__DIR__)) . '/frontend/web/uploads/images/thumbnails',
+			'basePath'  => dirname(dirname(__DIR__)) . '/frontend/web/image-manager/images',
+			'cachePath' => dirname(dirname(__DIR__)) . '/frontend/web/image-manager/images/thumbnails',
 		],
 		'shortCodeManager' => [
 			'class'     => 'tpoxa\shortcodes\Shortcode',

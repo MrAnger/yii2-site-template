@@ -1,6 +1,6 @@
 <?php
 
 return [
-	'CKEditorFileUploadPath'  => '@frontend/web/upload',
-	'CKEditorFileUploadedUrl' => '/upload',
+	'CKEditorFileUploadPath'  => '@frontend/web/wysiwyg-upload',
+	'CKEditorFileUploadedUrl' => '/wysiwyg-upload',
 ];
