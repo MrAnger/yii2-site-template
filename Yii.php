@@ -13,9 +13,12 @@ class Yii extends \yii\BaseYii {
 /**
  * @property \yii\web\UrlManager $frontendUrlManager
  * @property \yii\web\UrlManager $backendUrlManager
+ *
  * @property \common\components\ImageManager $imageManager
  * @property \common\components\UserBuddy $userBuddy
  * @property \tpoxa\shortcodes\Shortcode $shortCodeManager
+ *
+ * @property \yii\caching\Cache $cache
  */
 abstract class BaseApplication extends yii\base\Application {
 };

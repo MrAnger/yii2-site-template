@@ -16,4 +16,5 @@ FrontendAsset::register($this);
 			<?= $content ?>
 		</div>
 	</div>
+<?= $this->render('_modals') ?>
 <?php $this->endContent() ?>

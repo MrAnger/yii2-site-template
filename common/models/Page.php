@@ -22,6 +22,7 @@ use yii\helpers\Url;
  * @property string $content
  * @property string $image_cover_id
  * @property int $is_enabled
+ * @property int $is_show_sitemap
  * @property string $meta_title
  * @property string $meta_description
  * @property string $meta_keywords
@@ -64,6 +65,7 @@ class Page extends \yii\db\ActiveRecord {
 						'AND',
 						['<>', 'slug', 'root'],
 						['=', 'is_enabled', 1],
+						['=', 'is_show_sitemap', 1],
 					]);
 				},
 				'dataClosure' => function (Page $model) {
@@ -104,7 +106,7 @@ class Page extends \yii\db\ActiveRecord {
 			[['slug', 'meta_title', 'meta_description', 'meta_keywords', 'layout', 'file_template'], 'string', 'max' => 255],
 			[['image_cover_id'], 'exist', 'skipOnError' => true, 'targetClass' => Image::className(), 'targetAttribute' => ['image_cover_id' => 'id']],
 
-			[['is_enabled'], 'boolean'],
+			[['is_enabled', 'is_show_sitemap'], 'boolean'],
 			[['slug'], 'unique'],
 
 			[['name', 'slug', 'intro', 'content', 'params', 'published_at', 'meta_title', 'meta_description', 'meta_keywords', 'layout', 'file_template'], 'trim'],
@@ -124,6 +126,7 @@ class Page extends \yii\db\ActiveRecord {
 			'content'          => 'Основное содержание',
 			'image_cover_id'   => 'Изображение',
 			'is_enabled'       => 'Включен',
+			'is_show_sitemap'  => 'Отображать в карте сайта',
 			'meta_title'       => 'Title',
 			'meta_description' => 'Meta description',
 			'meta_keywords'    => 'Meta keywords',

@@ -35,7 +35,7 @@ class MailHelper extends Model {
 
 	/**
 	 * @param string $from
-	 * @param string $to
+	 * @param string|array $to
 	 * @param string $subject
 	 * @param string $view
 	 * @param array $params

@@ -25,6 +25,8 @@
         "sadovojav/yii2-image-thumbnail": "*",
         "tpoxa/shortcodes": "dev-master",
         "creocoder/yii2-nested-sets": "^0.9.0",
+        "himiklab/yii2-recaptcha-widget" : "*",
+        "skeeks/yii2-assets-auto-compress": "*",
         "bower-asset/vue": "^2.4",
         "bower-asset/dropzone": "^4.3",
         "bower-asset/sortablejs": "*"

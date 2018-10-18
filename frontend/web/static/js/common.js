@@ -7,6 +7,10 @@
     });
 })();
 
+function showSuccessModal() {
+    $('#thank-modal').modal('show');
+}
+
 function getCaretPosition(ctrl) {
     // IE < 9 Support
     if (document.selection) {

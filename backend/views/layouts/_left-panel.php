@@ -28,6 +28,12 @@ $menuItems = [
 		'url'   => ['/page-manager/update'],
 	],
 	[
+		'label' => 'Обратная связь',
+		'icon'  => '<i class="fa fa-comment-o" aria-hidden="true"></i>',
+		'url'   => ['/feedback-entry-manager/index'],
+		'count' => \common\models\FeedbackEntry::find()->where(['is_viewed' => 0])->count(),
+	],
+	[
 		'label' => 'Пользователи',
 		'icon'  => '<i class="fa fa-users" aria-hidden="true"></i>',
 		'items' => [
@@ -51,6 +57,11 @@ $menuItems = [
 				'label' => 'Robots.txt',
 				'icon'  => '<i class="fa fa-file-text-o" aria-hidden="true"></i>',
 				'url'   => ['/robots-txt-manager/index'],
+			],
+			[
+				'label' => 'Настройки',
+				'icon'  => '<i class="fa fa-cogs" aria-hidden="true"></i>',
+				'url'   => ['/setting-manager/index'],
 			],
 		],
 	],
@@ -87,8 +98,8 @@ $roleList = $userBuddy->getTranslatedRoleListForUser($user->id)
 
     <h5 class="leftpanel-title">Меню</h5>
 	<?= \backend\widgets\Menu::widget([
-		'items'           => $menuItems,
-		'options'         => [
+		'items'   => $menuItems,
+		'options' => [
 			'class' => 'nav nav-pills nav-stacked',
 		],
 	]) ?>

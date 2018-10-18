@@ -13,6 +13,10 @@ use yii\helpers\ArrayHelper;
 
 $this->title = 'Robots.txt Manager';
 
+$this->params['breadcrumbs'] = [
+	$this->title,
+];
+
 $this->registerJs(<<<JS
     (function() {
         var input = $('#robots-txt-selection-file');

@@ -117,7 +117,8 @@ class PageManagerController extends BaseController {
 
 	public function actionCreate($parentId = 1) {
 		$model = new Page([
-			'is_enabled' => true,
+			'is_enabled'      => true,
+			'is_show_sitemap' => true,
 		]);
 
 		/** @var Page $parentModel */

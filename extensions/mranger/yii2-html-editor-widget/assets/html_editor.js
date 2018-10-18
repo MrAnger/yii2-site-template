@@ -54,6 +54,8 @@ function htmlEditorInit(el, data) {
 
                 vm.aceEditorInstance = aceEditor;
 
+                vm.aceEditorInstance.getSession().setUseWrapMode(true);
+
                 aceEditor.getSession().on('change', function () {
                     vm.content = aceEditor.getSession().getValue();
                 });

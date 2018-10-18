@@ -27,6 +27,8 @@ $helpListAsString = function ($paramList) {
 <div id="tab-panel-other" class="tab-pane fade">
 	<?= $form->field($model, 'is_enabled')->checkbox() ?>
 
+	<?= $form->field($model, 'is_show_sitemap')->checkbox() ?>
+
 	<?= $form->field($model, 'published_at')->widget(\kartik\datecontrol\DateControl::className(), [
 		'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
 	]) ?>
