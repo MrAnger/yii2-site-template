@@ -30,6 +30,10 @@ return [
 				'encryption' => 'tls',
 			],
 		],
+		'reCaptcha'          => [
+			'siteKey' => '',
+			'secret'  => '',
+		],
 		'backendUrlManager'  => [
 			'baseUrl' => 'http://site.ru/cp',
 		],

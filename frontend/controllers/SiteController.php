@@ -41,6 +41,10 @@ class SiteController extends BaseController {
 	 * @return string
 	 */
 	protected function displayPage($page) {
+		if ($page->redirect_url) {
+			return $this->redirect($page->redirect_url, $page->redirect_code);
+		}
+
 		$this->view->registerMetaTag([
 			'name'    => 'description',
 			'content' => $page->meta_description,

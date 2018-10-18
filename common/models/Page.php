@@ -30,6 +30,8 @@ use yii\helpers\Url;
  * @property string $file_template
  * @property string $params
  * @property string $published_at
+ * @property string $redirect_url
+ * @property integer $redirect_code
  * @property string $created_at
  * @property string $updated_at
  *
@@ -100,17 +102,18 @@ class Page extends \yii\db\ActiveRecord {
 		return [
 			[['name'], 'required'],
 			[['intro', 'content', 'params'], 'string'],
-			[['image_cover_id'], 'integer'],
+			[['image_cover_id', 'redirect_code'], 'integer'],
 			[['published_at', 'created_at', 'updated_at'], 'safe'],
 			[['name'], 'string', 'max' => 250],
 			[['slug', 'meta_title', 'meta_description', 'meta_keywords', 'layout', 'file_template'], 'string', 'max' => 255],
+			[['redirect_url'], 'string', 'max' => 1000],
 			[['image_cover_id'], 'exist', 'skipOnError' => true, 'targetClass' => Image::className(), 'targetAttribute' => ['image_cover_id' => 'id']],
 
 			[['is_enabled', 'is_show_sitemap'], 'boolean'],
 			[['slug'], 'unique'],
 
-			[['name', 'slug', 'intro', 'content', 'params', 'published_at', 'meta_title', 'meta_description', 'meta_keywords', 'layout', 'file_template'], 'trim'],
-			[['name', 'slug', 'intro', 'content', 'params', 'published_at', 'meta_title', 'meta_description', 'meta_keywords', 'layout', 'file_template'], 'default'],
+			[['name', 'slug', 'intro', 'content', 'params', 'published_at', 'meta_title', 'meta_description', 'meta_keywords', 'layout', 'file_template', 'redirect_url'], 'trim'],
+			[['name', 'slug', 'intro', 'content', 'params', 'published_at', 'meta_title', 'meta_description', 'meta_keywords', 'layout', 'file_template', 'redirect_url'], 'default'],
 		];
 	}
 
@@ -134,6 +137,8 @@ class Page extends \yii\db\ActiveRecord {
 			'file_template'    => 'Файл шаблона',
 			'params'           => 'Дополнительные параметры',
 			'published_at'     => 'Опубликовано',
+			'redirect_url'     => 'Редирект на указанный URL',
+			'redirect_code'    => 'Код редиректа',
 			'created_at'       => 'Создано',
 			'updated_at'       => 'Изменено',
 		];

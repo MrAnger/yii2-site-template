@@ -22,6 +22,10 @@ return [
 			'viewPath'         => '@common/mail',
 			'useFileTransport' => true,
 		],
+		'reCaptcha'          => [
+			'siteKey' => '',
+			'secret'  => '',
+		],
 		'backendUrlManager'  => [
 			'baseUrl' => 'http://site.loc/cp',
 		],

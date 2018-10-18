@@ -12,7 +12,6 @@ return [
 	'showScriptName'  => false,
 	'rules'           => [
 		''           => '/site/index',
-		'index.html' => '/',
 
 		['pattern' => '<slug>', 'route' => '/site/view-page-by-slug', 'suffix' => '/'],
 

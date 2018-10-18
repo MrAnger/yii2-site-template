@@ -139,6 +139,10 @@ return [
 			'class'     => 'tpoxa\shortcodes\Shortcode',
 			'callbacks' => require(__DIR__ . '/_short-codes.php'),
 		],
+		'reCaptcha'        => [
+			'name'  => 'reCaptcha',
+			'class' => 'himiklab\yii2\recaptcha\ReCaptcha',
+		],
 
 		'view' => [
 			'theme' => [

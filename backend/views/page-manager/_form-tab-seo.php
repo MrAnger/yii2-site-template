@@ -36,4 +36,17 @@ $imageManager = Yii::$app->imageManager;
 			'maxlength' => true,
 		])
 	?>
+
+	<?= $form->field($model, 'redirect_url')
+		->textInput([
+			'maxlength' => true,
+		])
+	?>
+
+	<?= $form->field($model, 'redirect_code')
+		->dropDownList([
+			301 => "301 - страница постоянно доступна на указанном URL",
+			302 => "302 - страница временно доступна на указанном URL",
+		])
+	?>
 </div>

@@ -54,6 +54,11 @@ $menuItems = [
 				'url'   => ['/block-manager/index'],
 			],
 			[
+				'label' => 'Редиректы',
+				'icon'  => '<i class="fa fa-long-arrow-right" aria-hidden="true"></i>',
+				'url'   => ['/redirect-manager/index'],
+			],
+			[
 				'label' => 'Robots.txt',
 				'icon'  => '<i class="fa fa-file-text-o" aria-hidden="true"></i>',
 				'url'   => ['/robots-txt-manager/index'],
