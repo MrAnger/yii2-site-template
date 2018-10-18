@@ -21,7 +21,7 @@ $this->registerJs(<<<JS
         Sortable.create(el, {
             group: "group-pages",
             onStart: function(e) {
-                elements.addClass('drag-processing');
+                elements.find(":visible").addClass('drag-processing');
             },
             onEnd: function(e) {
                 elements.removeClass('drag-processing');
@@ -49,6 +49,8 @@ $this->registerJs(<<<JS
                       
                       location.reload();
                   }
+                  
+                  fixListIcons();
                 }).fail(function(response) {
                     console.log(response);
                     
@@ -59,9 +61,43 @@ $this->registerJs(<<<JS
             }
         });
     });
+    
+    function fixListIcons() {
+        var menu = $('.pages-menu');
+        
+        menu.find('li').each(function(index, li) {
+            var hasSubItems = false,
+                li = $(li);
+            
+            if(li.find('> ul').length && li.find('> ul > li').length) {
+                hasSubItems = true;
+            }
+            
+            if(hasSubItems) {
+                li.addClass('parent');
+            }else{
+                li.removeClass('parent open');
+            }
+        });
+    }
 })();
 JS
-)
+);
+
+$this->registerJs(<<<JS
+(function() {
+    var menu = $('.pages-menu');
+    
+    menu.on('click', 'li.parent .item', function(e) {
+        var el = $(this);
+        
+        if(this == e.target) {
+            el.parent('li').toggleClass('open');
+        }
+    });
+})();
+JS
+);
 ?>
 <div>
 	<?= \backend\widgets\PagesMenu::widget([

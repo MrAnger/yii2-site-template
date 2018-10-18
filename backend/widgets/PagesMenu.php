@@ -7,6 +7,24 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 class PagesMenu extends \yii\widgets\Menu {
+	/**
+	 * @var string
+	 */
+	public $parentCssClass = 'parent';
+
+	/**
+	 * @var string
+	 */
+	public $activeCssClass = 'active open';
+
+	/**
+	 * @var boolean
+	 */
+	public $activateParents = true;
+
+	/**
+	 * @var string
+	 */
 	public $linkTemplate = <<<HTML
 <div class='item' data-id="{id}">
 	<a class='link' href='{url}' title="{label}">{label}</a>
@@ -37,6 +55,9 @@ HTML;
 			$options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
 			$tag = ArrayHelper::remove($options, 'tag', 'li');
 			$class = [];
+			if (isset($item['items']) && !empty($item['items'])) {
+				$class[] = $this->parentCssClass;
+			}
 			if ($item['active']) {
 				$class[] = $this->activeCssClass;
 			}

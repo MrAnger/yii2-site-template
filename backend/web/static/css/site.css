@@ -119,7 +119,7 @@ a.desc:after {
 }
 
 .pages-menu .item a.link {
-    white-space: nowrap;
+    /*white-space: nowrap;*/
 }
 
 .pages-menu .item:hover {
@@ -163,6 +163,29 @@ a.desc:after {
 
 .pages-menu.drag-processing, .pages-menu ul.drag-processing {
     min-height: 10px;
+}
+
+.pages-menu li.parent.active > .item:before {
+    color: white;
+}
+
+.pages-menu li.parent > .item:before {
+    font-family: 'FontAwesome';
+    /*content: '\f107';*/
+    content: '\f105';
+}
+
+.pages-menu li.parent.open > .item:before {
+    font-family: 'FontAwesome';
+    content: '\f107';
+}
+
+.pages-menu li.parent > ul {
+    display: none;
+}
+
+.pages-menu li.parent.open > ul {
+    display: block;
 }
 
 .page-image-gallery-list {
