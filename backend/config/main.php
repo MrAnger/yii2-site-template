@@ -49,9 +49,8 @@ return [
 			'class'  => 'mihaildev\elfinder\PathController',
 			'access' => ['@'],
 			'root'   => [
-				'baseUrl'=>'',
-				'basePath'=>'@frontend/web/wysiwyg-upload',
-				'name' => 'Frontend/upload',
+				'baseUrl'  => '/wysiwyg-upload',
+				'basePath' => '@frontend/web/wysiwyg-upload',
 			],
 		],
 	],
