@@ -19,7 +19,13 @@ class StartUp implements BootstrapInterface {
 		// Проверяем, нужно ли сделать редирект
 		Event::on(Response::className(), Response::EVENT_BEFORE_SEND, function (Event $event) {
 			/** @var RedirectEntry $redirectModel */
-			$redirectModel = RedirectEntry::findOne(['from' => Yii::$app->request->url]);
+			$redirectModel = RedirectEntry::find()
+				->where([
+					'OR',
+					['=', 'from', Yii::$app->request->url],
+					['=', 'from', urldecode(Yii::$app->request->url)],
+				])
+				->one();
 
 			if ($redirectModel) {
 				Yii::$app->response->redirect($redirectModel->to, $redirectModel->code);
