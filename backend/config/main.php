@@ -44,5 +44,16 @@ return [
 			'errorAction' => 'site/error',
 		],
 	],
+	'controllerMap'       => [
+		'elfinder' => [
+			'class'  => 'mihaildev\elfinder\PathController',
+			'access' => ['@'],
+			'root'   => [
+				'baseUrl'=>'',
+				'basePath'=>'@frontend/web/wysiwyg-upload',
+				'name' => 'Frontend/upload',
+			],
+		],
+	],
 	'params'              => $params,
 ];

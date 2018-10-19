@@ -64,6 +64,11 @@ $menuItems = [
 				'url'   => ['/robots-txt-manager/index'],
 			],
 			[
+				'label' => 'Файловый менеджер',
+				'icon'  => '<i class="fa fa-file" aria-hidden="true"></i>',
+				'url'   => ['/elfinder/manager'],
+			],
+			[
 				'label' => 'Настройки',
 				'icon'  => '<i class="fa fa-cogs" aria-hidden="true"></i>',
 				'url'   => ['/setting-manager/index'],
