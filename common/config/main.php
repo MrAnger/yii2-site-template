@@ -50,7 +50,7 @@ return [
 			'displayTimezone'    => 'Europe/Moscow',
 
 			// set your timezone for date saved to db
-			'saveTimezone'       => 'UTC',
+			'saveTimezone'       => 'Europe/Moscow',
 
 			// automatically use kartik\widgets for each of the above formats
 			'autoWidget'         => true,
