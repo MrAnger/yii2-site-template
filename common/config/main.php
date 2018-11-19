@@ -4,7 +4,7 @@ return [
 	'name'           => 'Project name',
 	'language'       => 'ru-RU',
 	'sourceLanguage' => 'en-US',
-	//'timeZone'       => 'Europe/Moscow',
+	'timeZone'       => 'Europe/Moscow',
 	'aliases'        => array_merge(
 		require(__DIR__ . '/aliases.php'),
 		require(__DIR__ . '/aliases-local.php')
@@ -47,10 +47,10 @@ return [
 			],
 
 			// set your display timezone
-			//'displayTimezone'    => 'Europe/Moscow',
+			'displayTimezone'    => 'Europe/Moscow',
 
 			// set your timezone for date saved to db
-			//'saveTimezone'       => 'Europe/Moscow',
+			'saveTimezone'       => 'Europe/Moscow',
 
 			// automatically use kartik\widgets for each of the above formats
 			'autoWidget'         => true,
@@ -102,7 +102,7 @@ return [
 		'formatter'            => [
 			'thousandSeparator' => ' ',
 			'decimalSeparator'  => ',',
-			//'defaultTimeZone'   => 'Europe/Moscow',
+			'defaultTimeZone'   => 'Europe/Moscow',
 			'dateFormat'        => 'php: j F Y',
 			'datetimeFormat'    => 'php: j F Y G:i:s',
 		],
