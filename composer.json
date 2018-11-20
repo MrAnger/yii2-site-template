@@ -44,7 +44,7 @@
         "optimize-autoloader": true,
         "fxp-asset": {
             "installer-paths": {
-                "npm-asset-library": "vendor/npm-asset",
+                "npm-asset-library": "node_modules",
                 "bower-asset-library": "vendor/bower-asset"
             }
         }
