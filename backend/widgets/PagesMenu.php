@@ -28,6 +28,7 @@ class PagesMenu extends \yii\widgets\Menu {
 	public $linkTemplate = <<<HTML
 <div class='item' data-id="{id}">
 	<a class='link' href='{url}' title="{label}">{label}</a>
+	<small class="frontend-url">{frontendUrl}</small>
 	<span class='actions'>
 		<a href='{urlCreate}' title="Создать подстраницу">
 			<i class='glyphicon glyphicon-plus' aria-hidden='true'></i>
@@ -90,21 +91,23 @@ HTML;
 			$template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
 
 			return strtr($template, [
-				'{id}'        => $item['id'],
-				'{url}'       => Html::encode(Url::to($item['url'])),
-				'{label}'     => $item['label'],
-				'{urlCreate}' => Url::to(ArrayHelper::getValue($item, 'urlCreate', '#')),
-				'{urlDelete}' => Url::to(ArrayHelper::getValue($item, 'urlDelete', '#')),
+				'{id}'          => $item['id'],
+				'{url}'         => Html::encode(Url::to($item['url'])),
+				'{label}'       => $item['label'],
+				'{frontendUrl}' => Url::to(ArrayHelper::getValue($item, 'frontendUrl')),
+				'{urlCreate}'   => Url::to(ArrayHelper::getValue($item, 'urlCreate', '#')),
+				'{urlDelete}'   => Url::to(ArrayHelper::getValue($item, 'urlDelete', '#')),
 			]);
 		}
 
 		$template = ArrayHelper::getValue($item, 'template', $this->labelTemplate);
 
 		return strtr($template, [
-			'{id}'        => $item['id'],
-			'{label}'     => $item['label'],
-			'{urlCreate}' => Url::to(ArrayHelper::getValue($item, 'urlCreate', '#')),
-			'{urlDelete}' => Url::to(ArrayHelper::getValue($item, 'urlDelete', '#')),
+			'{id}'          => $item['id'],
+			'{label}'       => $item['label'],
+			'{frontendUrl}' => Url::to(ArrayHelper::getValue($item, 'frontendUrl')),
+			'{urlCreate}'   => Url::to(ArrayHelper::getValue($item, 'urlCreate', '#')),
+			'{urlDelete}'   => Url::to(ArrayHelper::getValue($item, 'urlDelete', '#')),
 		]);
 	}
 

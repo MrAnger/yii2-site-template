@@ -188,6 +188,14 @@ a.desc:after {
     display: block;
 }
 
+.pages-menu .frontend-url {
+    display: block;
+}
+
+.pages-menu li.active > .item .frontend-url {
+    color: white;
+}
+
 .page-image-gallery-list {
     margin-top: 10px;
     text-align: center;

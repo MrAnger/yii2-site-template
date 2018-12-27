@@ -11,6 +11,17 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 
+$helpListAsString = function ($paramList) {
+	$html = "";
+
+	foreach ($paramList as $paramData) {
+		$html .= "<div><b>$paramData[0]</b> - $paramData[1]</div>";
+	}
+
+	return $html;
+};
+
+$shortCodesHelpString = $helpListAsString(\common\models\Page::getHelpShortCodeList());
 ?>
 <div>
 	<?php $form = ActiveForm::begin([
@@ -40,6 +51,14 @@ use yii\helpers\ArrayHelper;
 		'attribute'     => 'content',
 		'nameAttribute' => 'selectedEditorContent',
 		'defaultEditor' => $block->getParam('selectedEditorContent', \MrAnger\Yii2_HtmlEditorWidget\HtmlEditor::HTML_EDITOR),
+		'layout'        => <<<HTML
+<div class='text-right'>{buttons}</div>
+<div class='source'>{editors}</div>
+<div class="hint-block">
+    <pre>$shortCodesHelpString</pre>
+</div>
+HTML
+		,
 	]) ?>
 
 	<?= $form->field($block, 'params')->textarea([

@@ -5,6 +5,7 @@ namespace backend\widgets;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use Yii;
 
 class Menu extends \yii\widgets\Menu {
 	/**
@@ -100,5 +101,43 @@ class Menu extends \yii\widgets\Menu {
 				'{count}' => $countHtml,
 			]);
 		}
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected function isItemActive($item)
+	{
+		if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
+			$route = Yii::getAlias($item['url'][0]);
+			if ($route[0] !== '/' && Yii::$app->controller) {
+				$route = Yii::$app->controller->module->getUniqueId() . '/' . $route;
+			}
+
+			// Немного переделаем лоигку, если совпадает контролер, значит TRUE
+			if (explode('/', ltrim($route, '/'))[0] == explode('/', $this->route)[0] && explode('/', $this->route)[0] !== 'user') {
+				return true;
+			}
+
+			if (ltrim($route, '/') !== $this->route) {
+				return false;
+			}
+
+			unset($item['url']['#']);
+
+			if (count($item['url']) > 1) {
+				$params = $item['url'];
+				unset($params[0]);
+				foreach ($params as $name => $value) {
+					if ($value !== null && (!isset($this->params[$name]) || $this->params[$name] != $value)) {
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 }

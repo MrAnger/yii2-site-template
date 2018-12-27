@@ -13,7 +13,7 @@ return [
 	'rules'           => [
 		''           => '/site/index',
 
-		['pattern' => '<slug>', 'route' => '/site/view-page-by-slug', 'suffix' => '/'],
+		['class' => 'frontend\components\PageUrlRule'],
 
 		['pattern' => 'sitemap', 'route' => 'sitemap/default/index', 'suffix' => '.xml'],
 	],

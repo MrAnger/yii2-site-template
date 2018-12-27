@@ -77,6 +77,8 @@ class PageManagerController extends BaseController {
 				$transaction = Yii::$app->db->beginTransaction();
 
 				try {
+					$updateFullUrl = $model->isAttributeChanged('slug');
+
 					if (!$model->save(false)) {
 						throw new \Exception("Model save is not successfully.");
 					}
@@ -90,6 +92,10 @@ class PageManagerController extends BaseController {
 
 							throw new \Exception("Model save with new image is not successfully.");
 						}
+					}
+
+					if ($updateFullUrl) {
+						Page::updateFullUrl($model);
 					}
 
 					$transaction->commit();
@@ -120,6 +126,8 @@ class PageManagerController extends BaseController {
 			'is_enabled'      => true,
 			'is_show_sitemap' => true,
 		]);
+
+		$model->setParentPageId($parentId);
 
 		/** @var Page $parentModel */
 		$parentModel = null;
@@ -179,6 +187,8 @@ class PageManagerController extends BaseController {
 					$treeModel->appendTo($parentModel->tree);
 
 					$model->populateRelation('tree', $treeModel);
+
+					Page::updateFullUrl($model);
 
 					$transaction->commit();
 				} catch (\Exception $e) {
@@ -274,6 +284,10 @@ class PageManagerController extends BaseController {
 				$root = PageTree::findOne(1);
 
 				$output['status'] = (boolean)$pageTree->appendTo($root);
+			}
+
+			if ($output['status']) {
+				Page::updateFullUrl($pageTree->page);
 			}
 
 			$transaction->commit();
@@ -426,12 +440,13 @@ class PageManagerController extends BaseController {
 					->all();
 
 				$result[] = [
-					'id'        => $pageTree->page->id,
-					'label'     => $pageTree->page->name,
-					'url'       => ['update', 'id' => $pageTree->page->id],
-					'urlCreate' => ['create', 'parentId' => $pageTree->page->id],
-					'urlDelete' => ['delete', 'id' => $pageTree->page->id],
-					'items'     => $treeMaker($children, $pageTree, $depth + 1),
+					'id'          => $pageTree->page->id,
+					'label'       => $pageTree->page->name,
+					'url'         => ['update', 'id' => $pageTree->page->id],
+					'urlCreate'   => ['create', 'parentId' => $pageTree->page->id],
+					'urlDelete'   => ['delete', 'id' => $pageTree->page->id],
+					'frontendUrl' => $pageTree->page->getFrontendUrl(),
+					'items'       => $treeMaker($children, $pageTree, $depth + 1),
 				];
 			}
 

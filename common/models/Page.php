@@ -18,6 +18,7 @@ use yii\helpers\Url;
  * @property string $id
  * @property string $name
  * @property string $slug
+ * @property string $full_url
  * @property string $intro
  * @property string $content
  * @property string $image_cover_id
@@ -41,8 +42,17 @@ use yii\helpers\Url;
  *
  * @property array $paramsAsArray
  * @property string $paramsAsString
+ *
+ * @property string $frontendUrl
+ * @property integer $parentPageId
  */
 class Page extends \yii\db\ActiveRecord {
+	/**
+	 * @var integer
+	 * Данное поле используется для валидации slug модели
+	 */
+	protected $parentPageId;
+
 	/**
 	 * @inheritdoc
 	 */
@@ -53,11 +63,14 @@ class Page extends \yii\db\ActiveRecord {
 				'value' => new Expression('NOW()'),
 			],
 			'sluggable'  => [
-				'class'         => SluggableBehavior::className(),
-				'attribute'     => 'name',
-				'slugAttribute' => 'slug',
-				'immutable'     => true,
-				'ensureUnique'  => true,
+				'class'           => SluggableBehavior::className(),
+				'attribute'       => 'name',
+				'slugAttribute'   => 'slug',
+				'immutable'       => true,
+				'ensureUnique'    => true,
+				'uniqueValidator' => [
+					'class' => 'common\validators\PageSlugUniqueValidator',
+				],
 			],
 			'sitemap'    => [
 				'class'       => SitemapBehavior::className(),
@@ -71,14 +84,8 @@ class Page extends \yii\db\ActiveRecord {
 					]);
 				},
 				'dataClosure' => function (Page $model) {
-					$url = Url::to(['/site/view-page-by-slug', 'slug' => $model->slug], true);
-
-					if ($model->slug == 'index') {
-						$url = Url::to(['/site/index'], true);
-					}
-
 					return [
-						'loc'        => $url,
+						'loc'        => $model->frontendUrl,
 						'lastmod'    => strtotime($model->updated_at),
 						'changefreq' => SitemapBehavior::CHANGEFREQ_WEEKLY,
 						'priority'   => 0.8,
@@ -106,11 +113,13 @@ class Page extends \yii\db\ActiveRecord {
 			[['published_at', 'created_at', 'updated_at'], 'safe'],
 			[['name'], 'string', 'max' => 250],
 			[['slug', 'meta_title', 'meta_description', 'meta_keywords', 'layout', 'file_template'], 'string', 'max' => 255],
+			[['full_url'], 'string', 'max' => 5000],
 			[['redirect_url'], 'string', 'max' => 1000],
 			[['image_cover_id'], 'exist', 'skipOnError' => true, 'targetClass' => Image::className(), 'targetAttribute' => ['image_cover_id' => 'id']],
 
 			[['is_enabled', 'is_show_sitemap'], 'boolean'],
-			[['slug'], 'unique'],
+			[['slug'], 'common\validators\PageSlugUniqueValidator'],
+			[['full_url'], 'unique'],
 
 			[['name', 'slug', 'intro', 'content', 'params', 'published_at', 'meta_title', 'meta_description', 'meta_keywords', 'layout', 'file_template', 'redirect_url'], 'trim'],
 			[['name', 'slug', 'intro', 'content', 'params', 'published_at', 'meta_title', 'meta_description', 'meta_keywords', 'layout', 'file_template', 'redirect_url'], 'default'],
@@ -125,6 +134,7 @@ class Page extends \yii\db\ActiveRecord {
 			'id'               => 'ID',
 			'name'             => 'Название',
 			'slug'             => 'URL',
+			'full_url'         => 'Полный URL страницы',
 			'intro'            => 'Краткое описание',
 			'content'          => 'Основное содержание',
 			'image_cover_id'   => 'Изображение',
@@ -254,6 +264,93 @@ class Page extends \yii\db\ActiveRecord {
 	 * @return array
 	 */
 	public static function getHelpParams() {
-		return [];
+		return [
+			['before_content_block=< Код блока >', 'Выводит содержимое блока перед основным содержанием страницы.'],
+			['after_content_block=< Код блока >', 'Выводит содержимое блока после основного содержания страницы.'],
+		];
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function getHelpShortCodeList() {
+		return [
+			['[template file="< Имя шаблона >"]', 'Выводит содержимое нужного файла шаблона.'],
+			['[block code="< Код блока >"]', 'Выводит содержимое нужного блока.'],
+			['[thumbnail path="< Путь до картинки >" preset="< Имя пресета >" width="< Ширина >" height="< Высота >" mode="< Режим >"]', 'Генерирует URL уменьшенной копии изображения. В поле path нужно указывать алиас папки, например такой "@frontend/web/static/img/image.jpg". В поле mode нужно указать значение outbound или inset. В первом случае картинка обрежется, стараясь вписаться в заданый квадрат. Во втором, картинка будет сохранять исходные пропорции.'],
+			['[homeUrl]', 'Выводит URL главной страницы сайта.'],
+			['[currentUrl absolute=<0 или 1>]', 'Выводит URL текущей страницы сайта. Параметр absolute отвечает за тип ссылки: относительная или абсолютная.'],
+		];
+	}
+
+	/**
+	 * @param bool $absolute
+	 *
+	 * @return string
+	 */
+	public function getFrontendUrl($absolute = true) {
+		$urlParams = ['/site/view-page-by-slug', 'full_url' => $this->full_url];
+
+		if ($this->full_url == 'index') {
+			$urlParams = ['/site/index'];
+		}
+
+		if ($absolute) {
+			$url = Yii::$app->frontendUrlManager->createAbsoluteUrl($urlParams);
+		} else {
+			$url = Yii::$app->frontendUrlManager->createUrl($urlParams);
+		}
+
+		return $url;
+	}
+
+	/**
+	 * @return integer
+	 */
+	public function getParentPageId() {
+		return $this->parentPageId;
+	}
+
+	/**
+	 * @param integer $id
+	 */
+	public function setParentPageId($id) {
+		$this->parentPageId = $id;
+	}
+
+	/**
+	 * @param Page $pageModel
+	 */
+	public static function updateFullUrl(Page $pageModel) {
+		$treeMaker = function (array $pagesTree, $parentPageTree, $depth) use (&$treeMaker) {
+			/** @var PageTree[] $pagesTree */
+			/** @var PageTree $parentPageTree */
+
+			$result = [];
+
+			foreach ($pagesTree as $pageTree) {
+				if ($pageTree->page->id != 1) {
+					$full_url = sprintf("%s/%s", $parentPageTree->page->full_url, $pageTree->page->slug);
+
+					if ($parentPageTree->page_id == 1) {
+						$full_url = $pageTree->page->slug;
+					}
+
+					$pageTree->page->full_url = $full_url;
+
+					$pageTree->page->save(false);
+				}
+
+				$children = $pageTree->children(1)
+					->joinWith(['page'])
+					->all();
+
+				$treeMaker($children, $pageTree, $depth + 1);
+			}
+
+			return $result;
+		};
+
+		$treeMaker([$pageModel->tree], $pageModel->tree->parents(1)->one(), 0);
 	}
 }

@@ -12,9 +12,24 @@ use yii\helpers\Html;
  */
 
 $imageManager = Yii::$app->imageManager;
+
+$helpListAsString = function ($paramList) {
+	$html = "";
+
+	foreach ($paramList as $paramData) {
+		$html .= "<div><b>$paramData[0]</b> - $paramData[1]</div>";
+	}
+
+	return $html;
+};
+
+$shortCodesHelpString = $helpListAsString(\common\models\Page::getHelpShortCodeList());
+
+$frontendUrlHtml = Html::a($model->getFrontendUrl(), $model->getFrontendUrl(), ['target' => '_blank']);
 ?>
 <div id="tab-panel-main" class="tab-pane fade in active">
 	<?= $form->field($model, 'name')
+		->hint((!$model->isNewRecord) ? $frontendUrlHtml : null)
 		->textInput([
 			'maxlength' => true,
 		])
@@ -64,5 +79,13 @@ $imageManager = Yii::$app->imageManager;
 		'attribute'     => 'content',
 		'nameAttribute' => 'selectedEditorContent',
 		'defaultEditor' => $model->getParam('selectedEditorContent', \MrAnger\Yii2_HtmlEditorWidget\HtmlEditor::WYSIWYG_EDITOR),
+		'layout'        => <<<HTML
+<div class='text-right'>{buttons}</div>
+<div class='source'>{editors}</div>
+<div class="hint-block">
+    <pre>$shortCodesHelpString</pre>
+</div>
+HTML
+		,
 	]) ?>
 </div>

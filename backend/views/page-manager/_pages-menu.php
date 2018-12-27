@@ -51,6 +51,9 @@ $this->registerJs(<<<JS
                   }
                   
                   fixListIcons();
+                  
+                  currentLi.find('.frontend-url')
+                    .text('Обновить страницу, что бы увидеть правильный URL.');
                 }).fail(function(response) {
                     console.log(response);
                     
