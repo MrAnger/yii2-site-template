@@ -9,7 +9,8 @@ return [
 	// 'baseUrl' => '',
 
 	'enablePrettyUrl' => true,
-	'showScriptName' => false,
-	'rules' => [
-	]
+	'showScriptName'  => false,
+	'rules'           => [
+		'' => '/site/index',
+	],
 ];
