@@ -10,12 +10,11 @@ return [
 	],
 	'components' => [
 		'db'                 => [
-			'class'             => 'yii\db\Connection',
-			'enableSchemaCache' => true,
-			'dsn'               => 'mysql:host=localhost;dbname=database_name',
-			'username'          => 'root',
-			'password'          => '',
-			'charset'           => 'utf8',
+			'class'    => 'yii\db\Connection',
+			'dsn'      => 'mysql:host=localhost;dbname=database_name',
+			'username' => 'root',
+			'password' => '',
+			'charset'  => 'utf8',
 		],
 		'mailer'             => [
 			'class'            => 'yii\swiftmailer\Mailer',

@@ -11,7 +11,6 @@ return [
 	'components' => [
 		'db'                 => [
 			'class'             => 'yii\db\Connection',
-			'enableSchemaCache' => true,
 			'dsn'               => 'mysql:host=localhost;dbname=database_name',
 			'username'          => 'root',
 			'password'          => '',
