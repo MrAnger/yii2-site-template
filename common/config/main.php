@@ -69,7 +69,7 @@ return [
 	'components'     => [
 		'cache'                => [
 			'class'     => 'yii\caching\FileCache',
-			'cachePath' => '@backend/runtime/cache',
+			'cachePath' => '@console/runtime/cache',
 		],
 		'log'                  => [
 			'traceLevel'    => YII_DEBUG ? 3 : 0,

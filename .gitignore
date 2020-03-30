@@ -19,8 +19,10 @@ Thumbs.db
 /vendor
 
 # composer itself is not needed
-composer.phar
-composer.lock
+/composer.phar
+/composer.lock
+
+/node_modules
 
 # Mac DS_Store Files
 .DS_Store
@@ -32,3 +34,5 @@ phpunit.phar
 
 # vagrant runtime
 /.vagrant
+
+/*.log
